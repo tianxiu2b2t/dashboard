@@ -2,9 +2,9 @@ import { webview } from '@kit.ArkWeb';
 import prompt from '@ohos.prompt';
 @Entry
 @Component
-struct dashboard {
+struct dashboardV2 {
   private webController: webview.WebviewController = new webview.WebviewController();
-  @State url: string = 'http://shenjack.top:10003/dashboard';
+  @State url: string = 'https://hmos.txit.top/dashboard';
   @State isLoading: boolean = false;
   @State progress: number = 0;
   @State showBackToTop: boolean = false;
