@@ -3,7 +3,7 @@ import { router, prompt } from "@kit.ArkUI";
 
 @Entry
 @Component
-export struct V2 {
+export struct V1 {
   @Builder
   Menu() {
     MenuItemGroup() {
@@ -65,7 +65,7 @@ export struct V2 {
 
   private webController: webview.WebviewController = new webview.WebviewController();
 
-  @State url: string = 'https://hmos.txit.top/dashboard';
+  @State url: string = 'http://shenjack.top:10003/dashboard';
   @State mode: WebDarkMode = WebDarkMode.Auto;
   @State access: boolean = true;
   @State isLoading: boolean = false;
@@ -102,7 +102,7 @@ export struct V2 {
         }
 
         Row() {
-          Text('Gallery Dashboard')
+          Text('Gallery Dashboard V1')
             .fontSize(21)
             .fontWeight(FontWeight.Bold)
             .margin({ left: 15 })
@@ -110,7 +110,7 @@ export struct V2 {
             Image($r('app.media.switch'))
               .height(24).width(24)
               .margin({ right: 30 })
-              .onClick(() => router.pushUrl({ url: 'pages/IndexV1' }))
+              .onClick(() => router.back())
             Image($r('app.media.menu'))
               .height(24).width(24)
               .margin({ right: 30 })
