@@ -3,7 +3,7 @@ import { router, prompt } from "@kit.ArkUI";
 
 @Entry
 @Component
-export struct V2 {
+export struct V1 {
   @Builder
   Menu() {
     MenuItemGroup() {
@@ -63,18 +63,18 @@ export struct V2 {
 
       MenuItem({
         startIcon: $r('app.media.switch'),
-        content: "切换V1"
+        content: "切换V2"
       })
         .onClick(() => {
-          router.pushUrl({ url: 'pages/IndexV1' });
-          prompt.showToast({ message: '切换V1', duration: 500 });
+          router.back();
+          prompt.showToast({ message: '切换V2', duration: 500 });
         })
     }
   }
 
   private webController: webview.WebviewController = new webview.WebviewController();
 
-  @State url: string = 'https://hmos.txit.top/dashboard';
+  @State url: string = 'http://shenjack.top:10003/dashboard';
   @State mode: WebDarkMode = WebDarkMode.Auto;
   @State access: boolean = true;
   @State isLoading: boolean = false;
@@ -111,7 +111,7 @@ export struct V2 {
         }
 
         Row() {
-          Text('Gallery Dashboard')
+          Text('Gallery Dashboard V1')
             .fontSize(21)
             .fontWeight(FontWeight.Bold)
             .margin({ left: 15 })
