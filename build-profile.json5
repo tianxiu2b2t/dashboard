@@ -5,13 +5,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "/Users/raychen/.ohos/config/default_dashboard_dwO0lU6ua7w0kw62Cj6W8OiCDkgS2MKz59TvatHZ8SE=.cer",
+          "certpath": "/Users/raychen/.ohos/config/default_dashboard_25f8DyWZP3oxkEReIDJyhmsfd12m1ARCNkSINtxcXFE=.cer",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001B939627880A09095DFD01CBF5CB4BEAF629BFB6D0CA3A250515839ACAFE3141A9352F2118A4A5C3",
-          "profile": "/Users/raychen/.ohos/config/default_dashboard_dwO0lU6ua7w0kw62Cj6W8OiCDkgS2MKz59TvatHZ8SE=.p7b",
+          "keyPassword": "0000001BF163A6AD135A44892E6C6010A8218340AEE783A0F9726BD31D6DCBE6E4A9CED00BD63125D42231",
+          "profile": "/Users/raychen/.ohos/config/default_dashboard_25f8DyWZP3oxkEReIDJyhmsfd12m1ARCNkSINtxcXFE=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "/Users/raychen/.ohos/config/default_dashboard_dwO0lU6ua7w0kw62Cj6W8OiCDkgS2MKz59TvatHZ8SE=.p12",
-          "storePassword": "0000001B4E98F9A086DA4735E8817BA6A7C5EA0F6AD98856947D12A6AF9B96146A61F57CB75CE66D3E243C"
+          "storeFile": "/Users/raychen/.ohos/config/default_dashboard_25f8DyWZP3oxkEReIDJyhmsfd12m1ARCNkSINtxcXFE=.p12",
+          "storePassword": "0000001B5F2884F9C52D351BA69CC6F3000D696717A6545EBFF6D78CE6F3091DFCC4CED61DD7B98244585A"
         }
       }
     ],
