@@ -3,7 +3,7 @@ import { router, prompt } from "@kit.ArkUI";
 
 @Entry
 @Component
-export struct V2 {
+export struct contact {
   @Builder
   Menu() {
     MenuItemGroup() {
@@ -74,14 +74,14 @@ export struct V2 {
 
   private webController: webview.WebviewController = new webview.WebviewController();
 
-  @State url: string = 'https://hmos.txit.top/dashboard';
+  @State url: string = 'https://hmos.txit.top/contact';
   @State mode: WebDarkMode = WebDarkMode.Auto;
   @State access: boolean = true;
   @State isLoading: boolean = false;
   @State progress: number = 0;
   @State scrollY: number = 0;
 
-  private readonly NAV_HEIGHT: number = 70;
+  private readonly NAV_HEIGHT: number = 40;
 
   build() {
     Stack() {
@@ -111,7 +111,7 @@ export struct V2 {
         }
 
         Row() {
-          Text('Gallery Dashboard')
+          Text('联系我们')
             .fontSize(21)
             .fontWeight(FontWeight.Bold)
             .margin({ left: 15 })

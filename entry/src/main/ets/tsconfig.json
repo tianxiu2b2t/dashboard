@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "module": "es2020",
+    "target": "es2020",
+
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "experimentalDecorators": true,
+    "baseUrl": "./",
+    "paths": {
+      "@common/*": ["common/*"],
+      "@components/*": ["components/*"],
+      "@pages/*": ["pages/*"]
+    }
+  },
+  "include": ["./**/*.ts", "./**/*.ets"]
+}

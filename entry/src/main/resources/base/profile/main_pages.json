@@ -1,11 +1,33 @@
 {
   "src": [
-    "pages/IndexV1",
-    "pages/Index",
-    "pages/user",
-    "pages/user/log",
-    "pages/user/contact",
-    "pages/user/api",
-    "pages/user/settings"
+    "pages/AppDetail",
+    "pages/Changelog",
+    "pages/Contact",
+    "pages/Dashboard",
+    "pages/Error404",
+    "pages/Help",
+    "pages/ICP",
+    "pages/Submit",
+
+    "common/api",
+    "common/constants",
+    "common/dynamicAPI",
+    "common/searchParams",
+    "common/types",
+    "common/useExpiringStorage",
+    "common/utils",
+
+    "components/AppCountInfo",
+    "components/AppDownloadChart",
+    "components/AppDownloadIncreaseCompare",
+    "components/AppSdkPie",
+    "components/AppSearchList",
+    "components/AppSyncProgress",
+    "components/AppTotalStarChart",
+    "components/InputEdit",
+    "components/Loading",
+    "components/SubmitAppTable",
+    "components/SwitchBar",
+
   ]
 }
