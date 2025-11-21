@@ -1,4 +1,5 @@
-import { Component, Entry, Column, Row, Button, Color, ref, nextTick, defineExpose } from '@kit/arkui';
+import { Component, Entry, Column, Row,
+  Button, Color, ref, nextTick, defineExpose } from '@kit/arkui';
 
 @Entry
 @Component
