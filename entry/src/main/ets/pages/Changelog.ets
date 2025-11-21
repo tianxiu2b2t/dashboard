@@ -11,7 +11,7 @@ import {
 } from '@kit/arkui';
 import MarkdownIt from 'markdown-it';
 import Loading from '../components/Loading';
-import { fetchChangelog } from '../api';
+import { fetchChangelog } from '../common/api';
 
 @Entry
 @Component

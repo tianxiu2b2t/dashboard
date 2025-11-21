@@ -1,7 +1,7 @@
 import { Component, Entry, Column, Row, Text, ProgressBar, Color, onMounted, onBeforeUnmount, ref } from '@kit/arkui';
-import type { SyncProgress } from '../types';
-import { formatCountTimeWithSpilt, formatCountTimeWithUnit, formatNumber } from '../utils';
-import { BASE_API } from '../dynmaticAPI';
+import type { SyncProgress } from '../common/types';
+import { formatCountTimeWithSpilt, formatCountTimeWithUnit, formatNumber } from '../common/utils';
+import { BASE_API } from '../common/dynmaticAPI';
 
 @Entry
 @Component
@@ -27,7 +27,7 @@ build() {
 Column({ width: '100%', gap: 8 }) {
 Text('同步状态').fontSize(20).fontWeight('semibold')
 
-```
+
   // 同步信息行
   Row({ justifyContent: 'space-between' }) {
     Text(this.data.value.is_syncing_all
@@ -64,7 +64,7 @@ Text('同步状态').fontSize(20).fontWeight('semibold')
     Text(`${formatNumber(this.data.value.progress[0])}/${formatNumber(this.data.value.progress[1])} [${formatCountTimeWithSpilt(this.data.value.elapsed_time.secs)} < ${formatCountTimeWithSpilt(this.data.value.estimated_total_time.secs - this.data.value.elapsed_time.secs)}]`).padding({ left: 8 })
   }
 }
-```
+
 
 }
 

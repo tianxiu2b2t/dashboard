@@ -1,7 +1,7 @@
 import { Component, Entry, Prop, Column, Row, Text, TextField, Button, Checkbox, Color, ScrollView } from '@kit/arkui';
-import type { AppInfo, AppListParams, AppListSortType } from '../types';
-import { fetchAppList } from '../api';
-import { formatNumber, formatSize, formatDate } from '../utils';
+import type { AppInfo, AppListParams, AppListSortType } from '../common/types';
+import { fetchAppList } from '../common/api';
+import { formatNumber, formatSize, formatDate } from '../common/utils';
 import { useRouter } from '@kit/arkui';
 
 @Entry
@@ -31,7 +31,7 @@ Column({ width: '100%', borderRadius: 20, padding: 16, backgroundColor: Color('t
 Row({ justifyContent: 'space-between', gap: 8, height: 60 }) {
 Text('应用列表').fontSize(16).fontWeight('medium').color(Color('#d97706'))
 
-```
+
     Row({ gap: 8 }) {
       TextField({ value: this.searchContent, placeholder: '搜索应用', width: 180, onChange: (v) => { this.searchContent = v } })
       TextField({ value: this.searchKey, placeholder: '搜索字段', width: 120, onChange: (v) => { this.searchKey = v } })
@@ -93,7 +93,7 @@ Text('应用列表').fontSize(16).fontWeight('medium').color(Color('#d97706'))
     Button({ text: '尾页', disabled: this.currentPage >= this.totalPages(), onClick: () => this.goToPage(this.totalPages()) })
   }
 }
-```
+
 
 }
 

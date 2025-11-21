@@ -8,9 +8,9 @@ import AppSearchList from '../components/AppSearchList';
 import AppDownloadIncreaseCompare from '../components/AppDownloadIncreaseCompare';
 import AppSyncProgress from '../components/AppSyncProgress';
 import { fetchMinSdkPie, fetchTargetSdkPie, marketInfo as fetchMarketInfo, starCharts, topDownloadHuawei, topDownloadWithoutHuawei } from '../api';
-import { formatCountTimeWithUnit } from '../utils';
-import type { AppInfo, MarketInfo, RatingInfo, SdkPie } from '../types';
-import { responseTimestamp } from '../constants';
+import { formatCountTimeWithUnit } from '../common/utils';
+import type { AppInfo, MarketInfo, RatingInfo, SdkPie } from '../common/types';
+import { responseTimestamp } from '../common/constants';
 
 @Entry
 @Component

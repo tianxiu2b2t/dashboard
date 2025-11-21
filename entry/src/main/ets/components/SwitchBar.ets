@@ -26,7 +26,7 @@ onClick: () => this.setActive(i)
 })
 }
 
-```
+
   // 指示器
   Row({
     position: 'absolute',
@@ -39,7 +39,7 @@ onClick: () => this.setActive(i)
     transition: 'all 0.3s ease-in-out'
   })
 }
-```
+
 
 }
 

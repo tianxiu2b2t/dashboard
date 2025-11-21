@@ -1,6 +1,6 @@
 import { Component, Entry, Column, Row, Text, Image, Color, ScrollView } from '@kit/arkui';
-import type { SubmitParseResult } from '../types';
-import { formatNumber, formatSize } from '../utils';
+import type { SubmitParseResult } from '../common/types';
+import { formatNumber, formatSize } from '../common/utils';
 import { useRouter } from '@kit/arkui';
 
 @Entry
@@ -20,7 +20,7 @@ Text(header).fontSize(12).fontWeight('medium').color(Color('#374151')).width(120
 })
 }
 
-```
+
   ScrollView({ flexGrow: 1 }) {
     Column({ gap: 0 }) {
       this.apps.forEach((item, index) => {
@@ -78,7 +78,7 @@ Text(header).fontSize(12).fontWeight('medium').color(Color('#374151')).width(120
     }
   }
 }
-```
+
 
 }
 

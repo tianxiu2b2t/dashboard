@@ -1,5 +1,5 @@
 import { Component, Entry, Prop, Column, Row, Text, WebView, Color } from '@kit/arkui';
-import type { RatingInfo } from '../types';
+import type { RatingInfo } from '../common/types';
 
 @Entry
 @Component
@@ -16,21 +16,21 @@ Row({ height: 50, borderBottomWidth: 1, borderBottomColor: Color('#d8b4fe'), ali
 Text('总应用评分分布').fontSize(16).fontWeight('medium').color(Color('#7c3aed'))
 }
 
-```
+
   // 图表区域
   WebView({
     flexGrow: 1,
     onLoad: (view) => { this.renderChart(view) }
   }).ref((v) => (this.chartWebView = v))
 }
-```
+
 
 }
 
 private renderChart(view: WebView) {
 if (!view) return;
 
-```
+
 const data = [
   { value: this.value.star_1, name: '无评分' },
   { value: this.value.star_2, name: '[1-2]星' },
@@ -61,7 +61,7 @@ const chartScript = `
   window.chart.setOption(${JSON.stringify(option)});
 `;
 view.evaluateJavaScript(chartScript, (res, err) => { if(err) console.error(err); });
-```
+
 
 }
 }

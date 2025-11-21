@@ -2,8 +2,8 @@ import { Component, Entry, Column, Text, Color, ref, Builder } from '@kit/arkui'
 import SwitchBar from '../components/SwitchBar';
 import InputEdit from '../components/InputEdit';
 import SubmitAppTable from '../components/SubmitAppTable';
-import type { SubmitParseResult, SubmitSubstanceResult, CommentInfo } from '../types';
-import { fetchAppDetail, submitApp, submitSubstance } from '../api';
+import type { SubmitParseResult, SubmitSubstanceResult, CommentInfo } from '../common/types';
+import { fetchAppDetail, submitApp, submitSubstance } from '../common/api';
 
 @Entry
 @Component

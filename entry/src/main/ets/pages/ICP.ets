@@ -1,5 +1,5 @@
 import { Component, Entry, Column, Text, Color, Builder } from '@kit/arkui';
-import { ICPs } from './constants';
+import { ICPs } from '../common/constants';
 
 @Entry
 @Component

@@ -17,7 +17,7 @@ export struct NotFoundPage {
           .color(Color('#111827'))
       }
 
-      ```
+
   // 404 内容
   Column({ flexGrow: 1, justifyContent: 'center', alignItems: 'center', gap: 16 }) {
     Text('404')
@@ -46,7 +46,7 @@ export struct NotFoundPage {
     })
   }
 }
-```
+
 
     }
   }

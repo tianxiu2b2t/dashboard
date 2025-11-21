@@ -24,7 +24,7 @@ import {
   TooltipComponent,
 } from 'echarts/components';
 import Loading from '../components/Loading';
-import type { AppInfo, ChartIncreaseDownloadCount } from '../types';
+import type { AppInfo, ChartIncreaseDownloadCount } from '../common/types';
 import {
   fetchAppDetail,
   fetchAppMetric,
@@ -36,8 +36,8 @@ import {
   sortByCountryCode,
   formatCountryCode,
   formatSDKVersion,
-} from '../utils';
-import { darkMode } from '../constants';
+} from '../common/utils';
+import { darkMode } from '../common/constants';
 
 use([
   CanvasRenderer,

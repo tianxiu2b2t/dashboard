@@ -1,7 +1,7 @@
 import { Component, Entry, Prop, Column, Row, Text, Picker, Button, TextField, WebView, Color } from '@kit/arkui';
-import { formatNumber } from '../utils';
-import type { RankingsDownloadIncrease, RankingsDownloadIncreaseType } from '../types';
-import { fetchIconUrl, fetchRankingDownloadIncrease } from '../api';
+import { formatNumber } from '../common/utils';
+import type { RankingsDownloadIncrease, RankingsDownloadIncreaseType } from '../common/types';
+import { fetchIconUrl, fetchRankingDownloadIncrease } from '../common/api';
 
 @Entry
 @Component
@@ -39,7 +39,7 @@ Picker({ selectedValue: this.sortedBy, values: ['increment','prior','current'], 
 }
 }
 
-```
+
   // 图表区域
   WebView({ flexGrow: 1, onLoad: (view) => { this.renderChart(view) } })
     .ref((v) => (this.growthChartWebView = v))
@@ -53,7 +53,7 @@ Picker({ selectedValue: this.sortedBy, values: ['increment','prior','current'], 
     Button({ text: '下一页', disabled: this.page + 1 >= this.totalPages(), onClick: () => { this.page++ } })
   }
 }
-```
+
 
 }
 
@@ -72,7 +72,7 @@ this.updateChart();
 private async updateChart() {
 if (!this.growthChartWebView) return;
 
-```
+
 this.fromDate = this.downloadIncreaseData[0]?.prior_period_date;
 this.toDate = this.downloadIncreaseData[this.downloadIncreaseData.length-1]?.current_period_date;
 
@@ -115,7 +115,6 @@ const chartScript = `
   window.chart.on('click', function(params){ window.location.href = '/app/' + params.data.app_id; });
 `;
 this.growthChartWebView.evaluateJavaScript(chartScript, (res, err) => { if(err) console.error(err); });
-```
 
 }
 

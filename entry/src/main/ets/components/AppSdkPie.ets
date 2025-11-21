@@ -1,6 +1,6 @@
 import { Component, Entry, Prop, Column, Row, Text, WebView, Color } from '@kit/arkui';
-import type { SdkPie } from '../types';
-import { formatSDKVersion } from '../utils';
+import type { SdkPie } from '../common/types';
+import { formatSDKVersion } from '../common/utils';
 
 @Entry
 @Component
@@ -24,14 +24,14 @@ Row({ height: 50, borderBottomWidth: 1, borderBottomColor: Color('#d8b4fe'), ali
 Text(this.title).fontSize(16).fontWeight('medium').color(Color('#7c3aed'))
 }
 
-```
+
   // 图表区域
   WebView({
     flexGrow: 1,
     onLoad: (view) => { this.renderChart(view) }
   }).ref((v) => (this.chartWebView = v))
 }
-```
+
 
 }
 
@@ -52,7 +52,7 @@ data: this.value.map(item => ({ value: item[1], name: formatSDKVersion(item[0]) 
 }]
 };
 
-```
+
 const chartScript = `
   if (!window.chart) {
     const chartDom = document.getElementById('chart');
@@ -63,7 +63,7 @@ const chartScript = `
 view.evaluateJavaScript(chartScript, (res, err) => {
   if(err) console.error(err);
 });
-```
+
 
 }
 }

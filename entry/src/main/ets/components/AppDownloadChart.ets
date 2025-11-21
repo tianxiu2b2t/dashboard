@@ -1,6 +1,6 @@
 import { Component, Entry, Prop, Column, Row, Text, WebView, Color } from '@kit/arkui';
-import { formatNumber } from '../utils';
-import type { AppInfo } from '../types';
+import { formatNumber } from '../common/utils';
+import type { AppInfo } from '../common/types';
 
 @Entry
 @Component
@@ -42,7 +42,7 @@ Text(this.title)
 .color(Color(this.titleColor))
 }
 
-```
+
   // 图表区域
   WebView({
     url: '', // 可加载本地html或远程html，html中渲染ECharts
@@ -53,7 +53,7 @@ Text(this.title)
   })
   .ref((v) => (this.chartWebView = v));
 }
-```
+
 
 }
 
@@ -85,7 +85,7 @@ data: val.map((item) => ({ value: item.download_count, app_id: item.app_id }))
 ]
 };
 
-```
+
 // 通过 JS 注入到 WebView 渲染图表
 const chartScript = `
   if (!window.chart) {
@@ -100,7 +100,7 @@ const chartScript = `
 view.evaluateJavaScript(chartScript, (res, err) => {
   if (err) console.error(err);
 });
-```
+
 
 }
 }
