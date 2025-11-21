@@ -9,14 +9,6 @@
     "pages/ICP",
     "pages/Submit",
 
-    "common/api",
-    "common/constants",
-    "common/dynamicAPI",
-    "common/searchParams",
-    "common/types",
-    "common/useExpiringStorage",
-    "common/utils",
-
     "components/AppCountInfo",
     "components/AppDownloadChart",
     "components/AppDownloadIncreaseCompare",
@@ -27,7 +19,7 @@
     "components/InputEdit",
     "components/Loading",
     "components/SubmitAppTable",
-    "components/SwitchBar",
+    "components/SwitchBar"
 
   ]
 }

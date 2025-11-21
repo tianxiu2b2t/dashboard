@@ -1,154 +1,66 @@
-import { webview } from "@kit.ArkWeb";
-import { router, prompt } from "@kit.ArkUI";
+import { Component, Entry, Column, Row, Text, Button, Color } from '@kit/arkui';
 
 @Entry
 @Component
-export struct contact {
+export struct ContactPage {
   @Builder
-  Menu() {
-    MenuItemGroup() {
-      MenuItem({
-        startIcon: $r('app.media.arrow_back'),
-        content: "返回上级"
-      })
-        .onClick(() => {
-          this.webController.backward();
-          prompt.showToast({ message: '返回上级', duration: 500 });
-        })
-
-      MenuItem({
-        startIcon: this.isLoading ? $r('app.media.close') : $r('app.media.refresh'),
-        content: this.isLoading ? "停止刷新" : "刷新页面"
-      })
-        .onClick(() => {
-          if (this.isLoading) {
-            this.webController.stop();
-            this.isLoading = false;
-            prompt.showToast({ message: '停止刷新', duration: 500 });
-          } else {
-            this.webController.refresh();
-            this.isLoading = true;
-            prompt.showToast({ message: '刷新页面', duration: 500 });
-          }
-        })
-
-      MenuItem({
-        startIcon: $r('app.media.arrow_up'),
-        content: "回到顶部"
-      })
-        .onClick(() => {
-          prompt.showToast({ message: '回到顶部', duration: 500 });
-          const duration = 500;
-          const frames = 120;
-          const interval = duration / frames;
-
-          const startY = this.scrollY;
-          let frame = 0;
-          const timer = setInterval(() => {
-            frame++;
-
-            const progress = frame / frames;
-            const easing = 1 - Math.pow(1 - progress, 3);
-
-            const newY = startY - startY * easing;
-
-            this.webController.scrollTo(0, newY);
-
-            if (frame >= frames) {
-              clearInterval(timer);
-              this.webController.scrollTo(0, 0);
-            }
-          }, interval);
-        })
-
-      MenuItem({
-        startIcon: $r('app.media.switch'),
-        content: "切换V1"
-      })
-        .onClick(() => {
-          router.pushUrl({ url: 'pages/IndexV1' });
-          prompt.showToast({ message: '切换V1', duration: 500 });
-        })
-    }
-  }
-
-  private webController: webview.WebviewController = new webview.WebviewController();
-
-  @State url: string = 'https://hmos.txit.top/contact';
-  @State mode: WebDarkMode = WebDarkMode.Auto;
-  @State access: boolean = true;
-  @State isLoading: boolean = false;
-  @State progress: number = 0;
-  @State scrollY: number = 0;
-
-  private readonly NAV_HEIGHT: number = 40;
-
   build() {
-    Stack() {
-      Column() {
-        Column()
-          .width('100%')
-          .height(Math.max(this.NAV_HEIGHT - this.scrollY, 0))
+    Column({ width: '100%', maxWidth: 1024, padding: 16 }) {
+      // 返回按钮
+      Button({
+        text: '返回仪表板',
+        onClick: () => window.location.href = '/dashboard',
+        backgroundColor: Color('transparent'),
+        color: Color('#3b82f6'),
+        borderRadius: 6,
+      }).margin({ bottom: 16 })
 
-        Web({
-          src: this.url,
-          controller: this.webController
-        })
-          .domStorageAccess(true)
-          .darkMode(this.mode)
-          .forceDarkAccess(this.access)
-          .width('100%')
-          .height('100%')
-          .onPageBegin(() => this.isLoading = true)
-          .onProgressChange((p) => this.progress = p.newProgress)
-          .onPageEnd(() => this.isLoading = false)
-          .onScroll((e) => this.scrollY = e.yOffset)
+      // 页面标题
+      Column({
+        backgroundColor: Color('#f5f3ff'),
+        padding: 16,
+        borderRadius: 16,
+        marginBottom: 32,
+      }) {
+        Text('问题反馈 & 交流').fontSize(24).fontWeight('bold').color(Color('#6b21a8'))
+        Text('如有任何问题、建议或合作意向，请通过以下方式联系我们')
+          .fontSize(14).color(Color('#4b5563')).margin({ top: 4 })
       }
 
-      Column() {
-        Column() {
-          Text('\n').fontSize(14)
-        }
+      // 联系方式卡片
+      Column({
+        backgroundColor: Color('#ffffff'),
+        borderRadius: 16,
+        padding: 16,
+        marginBottom: 32,
+        shadow: 'md',
+      }) {
+        Text('联系方式').fontSize(20).fontWeight('semibold').color(Color('#111827'))
 
-        Row() {
-          Text('联系我们')
-            .fontSize(21)
-            .fontWeight(FontWeight.Bold)
-            .margin({ left: 15 })
-          Row() {
-            Image($r('app.media.user'))
-              .height(24).width(24)
-              .margin({ right: 30 })
-              .onClick(() => router.pushUrl({ url: 'pages/user' }))
-            Image($r('app.media.menu'))
-              .height(24).width(24)
-              .margin({ right: 30 })
-              .bindMenu(this.Menu)
+        // 联系人
+        const contacts = [
+          { name: 'shenjack (主要负责人)', email: '3695888@qq.com', iconColor: '#8b5cf6' },
+          { name: 'tianxiu2b2t (v2站网页负责人)', email: 'administrator@ttb-network.top', iconColor: '#8b5cf6' },
+        ];
+        contacts.forEach(contact => {
+          Row({ marginTop: 16, gap: 8 }) {
+            Column({ width: 24, height: 24, backgroundColor: Color(contact.iconColor), borderRadius: 4 }) {}
+            Column() {
+              Text(contact.name).fontWeight('medium').color(Color('#111827'))
+              Text(contact.email).fontSize(14).color(Color('#4b5563'))
+            }
+          }
+        });
+
+        // QQ 群
+        Row({ marginTop: 16, gap: 8 }) {
+          Column({ width: 24, height: 24, backgroundColor: Color('#3b82f6'), borderRadius: 4 }) {}
+          Column() {
+            Text('QQ群').fontWeight('medium').color(Color('#111827'))
+            Text('757273833').fontSize(14).color(Color('#4b5563'))
           }
         }
-        .width('100%')
-        .justifyContent(FlexAlign.SpaceBetween)
-        .height(45)
-
-        Rect()
-          .width('100%')
-          .height(0.5)
-          .fill("#a6d5d5d5")
-          .position({ x: 0, y: 78 })
-
-      }
-      .backgroundBlurStyle(BlurStyle.Thin)
-      .position({ x: 0, y: 0 })
-      .width('100%')
-
-      if (this.isLoading) {
-        Progress({ value: this.progress, total: 100 })
-          .width('100%')
-          .height(3)
-          .position({ x: 0, y: 79 })
       }
     }
-    .width('100%')
-    .height('100%')
   }
 }
