@@ -44,7 +44,7 @@ export struct AppSearchList {
       }
 
       // 表格区域
-      ScrollView({ flexGrow: 1 }) {
+      Scroll({ flexGrow: 1 }) {
         Column({ gap: 0 }) {
           // 表头
           Row({ backgroundColor: Color('#fef3c7'), padding: 4 }) {

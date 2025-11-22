@@ -54,6 +54,12 @@ export interface RatingInfo {
     star_5: number;
 }
 
+export interface Contact {
+    name: string;
+    email: string;
+    iconColor: string;
+}
+
 export interface AppInfo {
     app_id: string;
     icon_url: string;
@@ -195,7 +201,7 @@ export interface AppDetailInfo {
 
 export type BackendDateType = string | number;
 
-export interface ICP {
+export interface ICPInfo {
     domain: string;
     icp: string;
 }

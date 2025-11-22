@@ -1,5 +1,4 @@
-import { Component, Entry, Column, Row, Text, Button, Color, ref, onMounted, watch } from "@kit.ArkUI";
-import { useRouter } from "@kit.ArkUI";
+import router from '@ohos.router';
 import { AppCountInfo } from '../components/AppCountInfo';
 import { AppTotalStarChart } from '../components/AppTotalStarChart';
 import { AppSdkPie } from '../components/AppSdkPie';
@@ -7,110 +6,229 @@ import { AppDownloadChart } from '../components/AppDownloadChart';
 import { AppSearchList } from '../components/AppSearchList';
 import { AppDownloadIncreaseCompare } from '../components/AppDownloadIncreaseCompare';
 import { AppSyncProgress } from '../components/AppSyncProgress';
-import { fetchMinSdkPie, fetchTargetSdkPie, marketInfo as fetchMarketInfo, starCharts, topDownloadHuawei, topDownloadWithoutHuawei } from '../api';
+import { fetchMinSdkPie, fetchTargetSdkPie, marketInfo as fetchMarketInfo, starCharts, topDownloadHuawei, topDownloadWithoutHuawei } from '../common/api';
 import { formatCountTimeWithUnit } from '../common/utils';
 import type { AppInfo, MarketInfo, RatingInfo, SdkPie } from '../common/types';
-import { responseTimestamp } from '../common/constants';
+
+// 定义按钮配置接口
+interface ButtonConfig {
+  text: string;
+  onClick: () => void;
+  bg: string;
+}
 
 @Entry
 @Component
 export struct DashboardPage {
-  private router = useRouter();
-  private lastUpdated = ref<string>('');
-  private nextRefreshTime = ref<number>(0);
-  private refreshTask: any;
-  private refreshing = ref(false);
+  @State lastUpdated: string = '';
+  @State nextRefreshTime: number = 0;
+  @State refreshing: boolean = false;
 
-  private marketInfo = ref<MarketInfo>({ app_count: { apps: 0, atomic_services: 0, total: 0 }, developer_count: 0, crate_version: '0.0.0', page_size_max: 0, sync_status: { is_syncing_all: false, total_failed: 0, total_inserted: 0, total_processed: 0, total_skipped: 0, elapsed_time: { secs: 0, nanos: 0 }, estimated_total_time: { secs: 0, nanos: 0 }, progress: [0, 0] }, user_agent: '' });
-  private topDownload = ref<AppInfo[]>([]);
-  private topDownloadOutHuawei = ref<AppInfo[]>([]);
-  private minSdk = ref<SdkPie[]>([]);
-  private targetSdk = ref<SdkPie[]>([]);
-  private stars = ref<RatingInfo>({ star_1: 0, star_2: 0, star_3: 0, star_4: 0, star_5: 0 });
-  private isLargeScreen = ref(window.innerWidth >= 1520);
-  private downloadIncreaseRef: any;
+  @State marketInfo: MarketInfo = {
+    app_count: { apps: 0, atomic_services: 0, total: 0 },
+    developer_count: 0,
+    crate_version: '0.0.0',
+    page_size_max: 0,
+    sync_status: {
+      is_syncing_all: false,
+      total_failed: 0,
+      total_inserted: 0,
+      total_processed: 0,
+      total_skipped: 0,
+      elapsed_time: { secs: 0, nanos: 0 },
+      estimated_total_time: { secs: 0, nanos: 0 },
+      progress: [0, 0]
+    },
+    user_agent: ''
+  };
 
-  @Builder
-  build() {
-    Column().width('100%') {
-      // 顶部信息卡片
-      Column().margin({ bottom: 24 }) {
-        Text(`华为应用市场看板 数据收集自 appgallery api 不保证来源的准确性、完整性和真实性 仅供参考`)
-          .fontSize(20).fontWeight('semibold').fontColor('#1e40af').margin({ bottom: 8 });
+  @State topDownload: AppInfo[] = [];
+  @State topDownloadOutHuawei: AppInfo[] = [];
+  @State minSdk: SdkPie[] = [];
+  @State targetSdk: SdkPie[] = [];
+  @State stars: RatingInfo = { star_1: 0, star_2: 0, star_3: 0, star_4: 0, star_5: 0 };
 
-        Text(`API 版本 ${this.marketInfo.value.crate_version}`)
-          .fontSize(16).fontWeight('semibold').fontColor('#1e40af').margin({ bottom: 12 });
+  private refreshTask: number = 0;
 
-        Row() {
-          const buttons = [
-            { text: this.refreshing.value ? '刷新中...' : '刷新数据', onClick: () => this.refreshData(), bg: '#06b6d4' },
-            { text: '帮助信息', onClick: () => this.router.push('/help'), bg: '#10b981' },
-            { text: '问题反馈&交流', onClick: () => this.router.push('/contact'), bg: '#8b5cf6' },
-            { text: '投稿', onClick: () => this.router.push('/submit'), bg: '#f97316' },
-            { text: '查看更新日志', onClick: () => this.router.push('/changelog'), bg: '#ef4444' },
-            { text: '打开 v1 站', onClick: () => window.open('http://shenjack.top:10003/dashboard'), bg: '#0ea5e9' },
-            { text: '切换主题', onClick: () => document.documentElement.classList.toggle('dark'), bg: '#6b7280' },
-          ];
+  aboutToAppear(): void {
+    this.refreshData();
+  }
 
-          ForEach(buttons, (btn) => {
-            Button()
-              .text(btn.text)
-              .backgroundColor(btn.bg)
-              .onClick(btn.onClick)
-              .margin({ right: 8, bottom: 8 });
-          });
-        };
-
-        Text(this.nextRefreshTime.value < 0 ? `距离下次刷新时间: ${formatCountTimeWithUnit(this.nextRefreshTime.value)}` : '正在刷新')
-          .fontSize(14).fontColor('#6b7280').margin({ top: 8 });
-      };
-
-      // 同步进度
-      AppSyncProgress();
-
-      // 总览信息
-      AppCountInfo({ value: this.marketInfo.value });
-
-      // 评分与 SDK 分布
-      Row().minHeight(384) {
-        AppTotalStarChart({ value: this.stars.value });
-        AppSdkPie({ title: '应用目标 sdk 分布', value: this.targetSdk.value });
-        AppSdkPie({ title: '应用最小 sdk 分布', value: this.minSdk.value });
-      };
-
-      // 下载榜
-      AppDownloadChart({ title: '总下载榜', value: this.topDownload.value, yAxisMin: true });
-      AppDownloadChart({ title: '非华为应用/内置应用下载榜', value: this.topDownloadOutHuawei.value, yAxisMin: true });
-
-      // 下载增量对比
-      AppDownloadIncreaseCompare({ ref: (r) => this.downloadIncreaseRef = r });
-
-      // 搜索列表
-      AppSearchList({ total_apps: this.marketInfo.value.app_count.total });
+  aboutToDisappear(): void {
+    // 清理定时器
+    if (this.refreshTask) {
+      clearTimeout(this.refreshTask);
     }
   }
 
+  build() {
+    Column({ space: 8 }) {
+      // 顶部信息卡片
+      Column({ space: 8 }) {
+        Text('华为应用市场看板 数据收集自 appgallery api 不保证来源的准确性、完整性和真实性 仅供参考')
+          .fontSize(20)
+          .fontWeight(500)
+          .fontColor('#1e40af')
 
-  private async refreshMarketInfo() { this.marketInfo.value = await fetchMarketInfo(); }
-  private async refreshTopDownloadApp() { this.topDownload.value = await topDownloadHuawei(); this.topDownloadOutHuawei.value = await topDownloadWithoutHuawei(); }
-  private async refreshStarCharts() { this.stars.value = await starCharts(); }
-  private async refreshSdkPie() { [this.minSdk.value, this.targetSdk.value] = await Promise.all([fetchMinSdkPie(), fetchTargetSdkPie()]); }
+        Text(`API 版本 ${this.marketInfo.crate_version}`)
+          .fontSize(16)
+          .fontWeight(500)
+          .fontColor('#1e40af')
 
-  private async refreshData() {
-    if (this.refreshing.value) return;
-    this.refreshing.value = true;
-    clearInterval(this.refreshTask);
-    this.nextRefreshTime.value = 0;
-    try {
-      await Promise.all([this.refreshMarketInfo(), this.refreshTopDownloadApp(), this.refreshStarCharts(), this.refreshSdkPie(), this.downloadIncreaseRef?.refreshData()]);
-    } catch (e) { console.error(e) }
-    this.nextRefreshTime.value = 4000;
-    this.refreshTask = setInterval(async () => { this.nextRefreshTime.value -= 1; if (this.nextRefreshTime.value <= 0) { await this.refreshData() } }, 1000);
-    this.refreshing.value = false;
+        // 按钮行
+        Scroll() {
+          Row({ space: 8 }) {
+            ForEach(this.getButtonConfigs(), (btn: ButtonConfig) => {
+              Button(btn.text)
+                .backgroundColor(btn.bg)
+                .fontColor(Color.White)
+                .borderRadius(8)
+                .padding(12)
+                .onClick(btn.onClick)
+            })
+          }
+          .padding(8)
+        }
+        .scrollable(ScrollDirection.Horizontal)
+
+        Text(this.nextRefreshTime > 0 ?
+          `距离下次刷新时间: ${formatCountTimeWithUnit(this.nextRefreshTime)}` :
+          '正在刷新')
+          .fontSize(14)
+          .fontColor('#6b7280')
+      }
+      .width('100%')
+      .padding(16)
+      .backgroundColor('#f8fafc')
+      .borderRadius(16)
+      .margin({ bottom: 24 })
+
+      // 同步进度
+      AppSyncProgress({})
+
+      // 总览信息
+      AppCountInfo({ value: this.marketInfo })
+
+      // 评分与 SDK 分布
+      Row({ space: 16 }) {
+        AppTotalStarChart({ value: this.stars })
+        AppSdkPie({ title: '应用目标 sdk 分布', value: this.targetSdk })
+        AppSdkPie({ title: '应用最小 sdk 分布', value: this.minSdk })
+      }
+      .width('100%')
+      .margin({ bottom: 24 })
+
+      // 下载榜
+      AppDownloadChart({ title: '总下载榜', value: this.topDownload, yAxisMin: true })
+      AppDownloadChart({ title: '非华为应用/内置应用下载榜', value: this.topDownloadOutHuawei, yAxisMin: true })
+
+      // 下载增量对比
+      AppDownloadIncreaseCompare({})
+
+      // 搜索列表 - 直接使用组件，不传递任何属性
+      AppSearchList()
+    }
+    .width('100%')
+    .height('100%')
+    .padding(16)
+    .backgroundColor('#ffffff')
   }
 
-  onMounted(() => {
-  this.refreshData();
-  window.addEventListener('resize', () => this.isLargeScreen.value = window.innerWidth >= 1520);
-});
+  // 获取按钮配置
+  private getButtonConfigs(): ButtonConfig[] {
+    const configs: ButtonConfig[] = [
+      {
+        text: this.refreshing ? '刷新中...' : '刷新数据',
+        onClick: (): void => { this.refreshData(); },
+        bg: '#06b6d4'
+      },
+      {
+        text: '帮助信息',
+        onClick: (): void => { router.pushUrl({ url: 'pages/Help' }); },
+        bg: '#10b981'
+      },
+      {
+        text: '问题反馈&交流',
+        onClick: (): void => { router.pushUrl({ url: 'pages/Contact' }); },
+        bg: '#8b5cf6'
+      },
+      {
+        text: '投稿',
+        onClick: (): void => { router.pushUrl({ url: 'pages/Submit' }); },
+        bg: '#f97316'
+      },
+      {
+        text: '查看更新日志',
+        onClick: (): void => { router.pushUrl({ url: 'pages/Changelog' }); },
+        bg: '#ef4444'
+      },
+      {
+        text: '切换主题',
+        onClick: (): void => { this.toggleTheme(); },
+        bg: '#6b7280'
+      },
+    ];
+    return configs;
+  }
+
+  private async refreshMarketInfo(): Promise<void> {
+    this.marketInfo = await fetchMarketInfo();
+  }
+
+  private async refreshTopDownloadApp(): Promise<void> {
+    const topDownloadData = await topDownloadHuawei();
+    const topDownloadOutHuaweiData = await topDownloadWithoutHuawei();
+    this.topDownload = topDownloadData;
+    this.topDownloadOutHuawei = topDownloadOutHuaweiData;
+  }
+
+  private async refreshStarCharts(): Promise<void> {
+    this.stars = await starCharts();
+  }
+
+  private async refreshSdkPie(): Promise<void> {
+    const minSdkData = await fetchMinSdkPie();
+    const targetSdkData = await fetchTargetSdkPie();
+    this.minSdk = minSdkData;
+    this.targetSdk = targetSdkData;
+  }
+
+  private async refreshData(): Promise<void> {
+    if (this.refreshing) return;
+
+    this.refreshing = true;
+
+    // 清除现有定时器
+    if (this.refreshTask) {
+      clearTimeout(this.refreshTask);
+    }
+
+    this.nextRefreshTime = 0;
+
+    try {
+      await Promise.all([
+        this.refreshMarketInfo(),
+        this.refreshTopDownloadApp(),
+        this.refreshStarCharts(),
+        this.refreshSdkPie(),
+      ]);
+    } catch (e) {
+      console.error('刷新数据失败:', e);
+    }
+
+    this.nextRefreshTime = 4000;
+
+    // 设置下一次刷新
+    this.refreshTask = setTimeout(() => {
+      this.refreshData();
+    }, this.nextRefreshTime * 1000);
+
+    this.refreshing = false;
+  }
+
+  private toggleTheme(): void {
+    // HarmonyOS 主题切换实现
+    // 这里需要根据你的实际主题切换逻辑来实现
+    console.log('切换主题');
+  }
 }

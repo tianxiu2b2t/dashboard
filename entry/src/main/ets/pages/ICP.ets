@@ -1,5 +1,6 @@
 import { ICPs } from '../common/constants';
 import router from '@ohos.router';
+import { ICPInfo } from '../common/types';
 
 @Entry
 @Component
@@ -9,27 +10,25 @@ export struct ICPFooter {
   @Builder
   build() {
     Column() {
-      ForEach(ICPs, (icp) => {
+      ForEach(ICPs, (icp: ICPInfo) => { // 为 icp 参数添加明确类型
         if (this.domain.includes(icp.domain)) {
-
           // 本网站备案域名：
           Row() {
             Text('本网站备案域名：')
-              .fontColor(0xFF6B7280)
+              .fontColor('#6B7280') // 使用 HEX 字符串而不是数字
               .fontSize(12)
 
             Text(icp.domain)
-              .fontColor(0xFF374151)
+              .fontColor('#374151') // 使用 HEX 字符串而不是数字
               .fontWeight(FontWeight.Medium)
               .margin({ left: 4 })
           }
 
           // ICP 号
           Text(icp.icp)
-            .fontColor(0xFF3B82F6)
+            .fontColor('#3B82F6') // 使用 HEX 字符串而不是数字
             .fontSize(12)
             .onClick(() => {
-              // HarmonyOS 无 window.open，必须用 WebView 或 router
               router.pushUrl({
                 url: 'pages/ExternalWeb',
                 params: { link: 'https://beian.miit.gov.cn' }
@@ -41,5 +40,4 @@ export struct ICPFooter {
     .width('100%')
     .padding({ top: 16, bottom: 16 })
   }
-
 }

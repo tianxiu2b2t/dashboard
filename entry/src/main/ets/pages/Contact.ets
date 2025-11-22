@@ -1,20 +1,23 @@
 import router from '@ohos.router';
+import type { Contact } from '../common/types';
+
 
 @Entry
 @Component
 export struct ContactPage {
-  contacts = [
+  // 使用明确的 Contact 类型
+  private contacts: Contact[] = [
     { name: 'shenjack (主要负责人)', email: '3695888@qq.com', iconColor: '#8b5cf6' },
     { name: 'tianxiu2b2t (v2站网页负责人)', email: 'administrator@ttb-network.top', iconColor: '#8b5cf6' },
   ];
 
   @Builder
-  contactItem(contact: { name: string, email: string, iconColor: string }) {
+  contactItem(contact: Contact) { // 使用接口类型而不是对象字面量
     Row() {
       Column() {}
       .width(24)
       .height(24)
-      .backgroundColor(Color.Red)
+      .backgroundColor(contact.iconColor) // 使用动态颜色
       .borderRadius(4)
 
       Column() {
@@ -25,14 +28,14 @@ export struct ContactPage {
         Text(contact.email)
           .fontSize(14)
           .fontColor('#4b5563');
-      }.margin({ left: 8 })
-    }.margin({ top: 16 })
+      }
+      .margin({ left: 8 })
+    }
+    .margin({ top: 16 })
   }
 
-  @Builder
   build() {
     Column() {
-
       // 返回按钮
       Column() {
         Button('返回仪表板')
@@ -40,7 +43,11 @@ export struct ContactPage {
           .backgroundColor(Color.Transparent)
           .borderRadius(6)
           .fontColor('#3b82f6')
-          .onClick(() => router.pushUrl({ url: 'pages/Dashboard' }))
+          .onClick(() => {
+            router.pushUrl({
+              url: 'pages/Dashboard'
+            });
+          })
       }
       .margin({ bottom: 16 });
 
@@ -68,7 +75,7 @@ export struct ContactPage {
           .fontWeight(FontWeight.Medium)
           .fontColor('#111827');
 
-        ForEach(this.contacts, (item) => {
+        ForEach(this.contacts, (item: Contact) => { // 为 ForEach 添加类型
           this.contactItem(item);
         });
 
@@ -97,7 +104,10 @@ export struct ContactPage {
       .borderRadius(16)
       .padding(16)
       .margin({ bottom: 32 })
-
     }
+    .width('100%')
+    .height('100%')
+    .padding(16)
+    .backgroundColor('#f9fafb') // 添加背景色让页面更完整
   }
 }

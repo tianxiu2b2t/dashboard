@@ -5,7 +5,7 @@ import { fetchIconUrl, fetchRankingDownloadIncrease } from '../common/api';
 
 @Entry
 @Component
-export struct AppDownloadIncreaseCompar {
+export struct AppDownloadIncreaseCompare {
   private downloadIncreaseData: RankingsDownloadIncrease[] = [];
   private growthChartWebView: WebView | null = null;
 
