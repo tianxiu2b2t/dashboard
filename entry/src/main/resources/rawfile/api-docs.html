@@ -1,0 +1,97 @@
+<!-- resources/rawfile/api-docs.html -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鸿蒙应用市场 API 文档</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css">
+    <style>
+        html {
+            box-sizing: border-box;
+            overflow: -moz-scrollbars-vertical;
+            overflow-y: scroll;
+        }
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f8f9fa;
+        }
+        .topbar {
+            background-color: #1b1b1b !important;
+        }
+        .swagger-ui .topbar .download-url-wrapper {
+            display: none;
+        }
+        .custom-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        #swagger-ui {
+            padding: 20px;
+        }
+        .loading-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            color: #666;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<div class="custom-header">
+    鸿蒙应用市场 API 文档
+</div>
+
+<div id="swagger-ui">
+    <div class="loading-container">
+        正在加载 API 文档...
+    </div>
+</div>
+
+<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js" charset="UTF-8"></script>
+<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-standalone-preset.js" charset="UTF-8"></script>
+<script>
+    // 延迟加载以确保DOM完全加载
+    setTimeout(function() {
+        try {
+            window.ui = SwaggerUIBundle({
+                url: "https://your-api-server.com/openapi.json", // 替换为实际的API地址
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "StandaloneLayout",
+                defaultModelsExpandDepth: 1,
+                defaultModelExpandDepth: 1,
+                docExpansion: "list",
+                filter: true,
+                showExtensions: true,
+                showCommonExtensions: true,
+                tryItOutEnabled: true,
+                operationsSorter: "alpha",
+                tagsSorter: "alpha"
+            });
+        } catch (error) {
+            document.getElementById('swagger-ui').innerHTML =
+                '<div class="loading-container" style="color: red;">加载失败: ' + error.message + '</div>';
+            console.error('Swagger UI 加载错误:', error);
+        }
+    }, 100);
+</script>
+</body>
+</html>
