@@ -1,5 +1,5 @@
 import { AppsTableComponent } from '../component/AppsTableComponent'
-import { TopDownloadChartComponent, NonHuaweiDownloadChartComponent } from  '../component/ChartsAreaComponent'
+import { TopDownloadChartComponent, NonHuaweiDownloadChartComponent, ChartsAreaComponent } from  '../component/ChartsAreaComponent'
 import { HeaderComponent } from '../component/HeaderComponent'
 import { HelpModal, HelpSection } from '../component/ModalComponents'
 import { StatsCardsComponent } from '../component/StatsCardsComponent'
@@ -19,7 +19,9 @@ struct Dashboard {
   @State showChangelogModal: boolean = false
 
   build() {
+    Scroll(){
     Column() {
+
       HeaderComponent()
       StatsCardsComponent()
       TopDownloadChartComponent()
@@ -35,8 +37,7 @@ struct Dashboard {
       })
     }
     .width('100%')
-    .height('100%')
     .padding(16)
     .backgroundColor('#EEF6FE')
-  }
+  }}
 }

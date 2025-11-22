@@ -40,15 +40,27 @@ export struct ChartsAreaComponent {
   build() {
     Grid() {
       GridItem() {
-        ChartCardComponent('总应用评分分布', '#faf5ff', '#6d28d9')
+        ChartCardComponent({
+          title: '总应用评分分布',
+          bgColor: '#faf5ff',
+          textColor: '#6d28d9'
+        })
       }
 
       GridItem() {
-        ChartCardComponent('应用目标sdk分布', '#faf5ff', '#6d28d9')
+        ChartCardComponent({
+          title: '应用目标sdk分布',
+          bgColor: '#faf5ff',
+          textColor: '#6d28d9'
+        })
       }
 
       GridItem() {
-        ChartCardComponent('应用最小sdk分布', '#faf5ff', '#6d28d9')
+        ChartCardComponent({
+          title: '应用最小sdk分布',
+          bgColor: '#faf5ff',
+          textColor: '#6d28d9'
+        })
       }
     }
     .columnsTemplate('1fr 1fr 1fr')
@@ -96,9 +108,9 @@ export struct NonHuaweiDownloadChartComponent {
 
 @Component
 struct ChartCardComponent {
-  title: string = '';
-  bgColor: string = '#ffffff';
-  textColor: string = '#000000';
+  @Prop title: string = '';
+  @Prop bgColor: string = '#ffffff';
+  @Prop textColor: string = '#000000';
 
   build() {
     Column() {

@@ -11,27 +11,52 @@ export struct StatsCardsComponent {
     Grid() {
       // 已爬取总数卡片
       GridItem() {
-        StatCardComponent('已爬取总数', this.totalCount.toString(), '#fdf2f8', '#be185d')
+        StatCardComponent({
+          title: '已爬取总数',
+          value: this.totalCount.toString(),
+          bgColor: '#fdf2f8',
+          textColor: '#be185d'
+        })
       }
 
       // 应用总数卡片
       GridItem() {
-        StatCardComponent('应用总数', this.appCount.toString(), '#fff7ed', '#d97706')
+        StatCardComponent({
+          title: '应用总数',
+          value: this.appCount.toString(),
+          bgColor: '#fff7ed',
+          textColor: '#d97706'
+        })
       }
 
       // 元服务总数卡片
       GridItem() {
-        StatCardComponent('元服务总数', this.atomicServiceCount.toString(), '#f0fdf4', '#047857')
+        StatCardComponent({
+          title: '元服务总数',
+          value: this.atomicServiceCount.toString(),
+          bgColor: '#f0fdf4',
+          textColor: '#047857'
+        })
       }
 
       // 开发者总数卡片
       GridItem() {
-        StatCardComponent('开发者总数', this.developerCount.toString(), '#faf5ff', '#3730a3')
+        StatCardComponent({
+          title: '开发者总数',
+          value: this.developerCount.toString(),
+          bgColor: '#faf5ff',
+          textColor: '#3730a3'
+        })
       }
 
       // 已知专题数量卡片
       GridItem() {
-        StatCardComponent('已知专题数量', this.substanceCount.toString(), '#faf5ff', '#7c3aed')
+        StatCardComponent({
+          title: '已知专题数量',
+          value: this.substanceCount.toString(),
+          bgColor: '#faf5ff',
+          textColor: '#7c3aed'
+        })
       }
     }
     .columnsTemplate('1fr 1fr 1fr 1fr 1fr')
@@ -44,10 +69,10 @@ export struct StatsCardsComponent {
 
 @Component
 export struct StatCardComponent {
-  title: string = ''
-  value: string = ''
-  bgColor: string = '#ffffff'
-  textColor: string = '#000000'
+  @Prop title: string = ''
+  @Prop value: string = ''
+  @Prop bgColor: string = '#ffffff'
+  @Prop textColor: string = '#000000'
 
   build() {
     Column() {

@@ -25,7 +25,7 @@ export default class EntryAbility extends UIAbility {
     // 设置全局沉浸式效果
     this.setGlobalImmersive(windowStage);
 
-    windowStage.loadContent('pages/Index', (err) => {
+    windowStage.loadContent('assets/pages/main', (err) => {
       if (err.code) {
         hilog.error(DOMAIN, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err));
         return;

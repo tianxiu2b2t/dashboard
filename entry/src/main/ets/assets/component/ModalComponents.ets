@@ -33,24 +33,36 @@ export struct HelpModal {
           Scroll() {
             Column() {
               // 数据来源说明
-              HelpSection('📊 数据来源说明',
-                '本看板数据收集自华为应用市场（AppGallery）公开API，数据仅供参考，不保证来源的准确性、完整性和真实性。',
-                '#dbeafe', '#1e40af')
+              HelpSection({
+                title: '📊 数据来源说明',
+                content: '本看板数据收集自华为应用市场（AppGallery）公开API，数据仅供参考，不保证来源的准确性、完整性和真实性。',
+                bgColor: '#dbeafe',
+                textColor: '#1e40af'
+              })
 
               // 主要功能
-              HelpSection('🚀 主要功能',
-                '• 数据概览 - 显示已爬取总数、应用总数、元服务总数、开发者总数\n• 总下载榜 - 展示应用下载量排行榜\n• 评分分布 - 显示应用评分的分布情况\n• 非华为应用下载榜 - 展示非华为应用和内置应用的下载排行\n• 应用列表 - 详细的应用信息表格，支持搜索、排序和快速筛选',
-                '#d1fae5', '#047857')
+              HelpSection({
+                title: '🚀 主要功能',
+                content: '• 数据概览 - 显示已爬取总数、应用总数、元服务总数、开发者总数\n• 总下载榜 - 展示应用下载量排行榜\n• 评分分布 - 显示应用评分的分布情况\n• 非华为应用下载榜 - 展示非华为应用和内置应用的下载排行\n• 应用列表 - 详细的应用信息表格，支持搜索、排序和快速筛选',
+                bgColor: '#d1fae5',
+                textColor: '#047857'
+              })
 
               // 使用说明
-              HelpSection('📝 使用说明',
-                '• 刷新数据 - 点击"刷新数据"按钮获取最新数据\n• 搜索应用 - 在应用列表上方的搜索框中输入关键词\n• 快速筛选 - 点击开发者名称可快速搜索该开发者的所有应用\n• 排序功能 - 点击表格标题进行排序\n• 查看详情 - 点击应用行查看详细的应用信息',
-                '#fef3c7', '#92400e')
+              HelpSection({
+                title: '📝 使用说明',
+                content: '• 刷新数据 - 点击"刷新数据"按钮获取最新数据\n• 搜索应用 - 在应用列表上方的搜索框中输入关键词\n• 快速筛选 - 点击开发者名称可快速搜索该开发者的所有应用\n• 排序功能 - 点击表格标题进行排序\n• 查看详情 - 点击应用行查看详细的应用信息',
+                bgColor: '#fef3c7',
+                textColor: '#92400e'
+              })
 
               // 注意事项
-              HelpSection('⚠️ 注意事项',
-                '• 部分功能仍在开发中，可能会出现bug或数据不完整的情况\n• 数据更新可能存在延迟，请以官方数据为准\n• 应用详情页面仍在施工中，部分数据可能显示不正确',
-                '#fecdd3', '#be123c')
+              HelpSection({
+                title: '⚠️ 注意事项',
+                content: '• 部分功能仍在开发中，可能会出现bug或数据不完整的情况\n• 数据更新可能存在延迟，请以官方数据为准\n• 应用详情页面仍在施工中，部分数据可能显示不正确',
+                bgColor: '#fecdd3',
+                textColor: '#be123c'
+              })
             }
             .width('100%')
             .padding(16)
@@ -85,10 +97,10 @@ export struct HelpModal {
 
 @Component
 export struct HelpSection {
-  title: string = ''
-  content: string = ''
-  bgColor: string = '#ffffff'
-  textColor: string = '#000000'
+  @Prop title: string = ''
+  @Prop content: string = ''
+  @Prop bgColor: string = '#ffffff'
+  @Prop textColor: string = '#000000'
 
   build() {
     Column() {

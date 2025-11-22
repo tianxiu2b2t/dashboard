@@ -35,10 +35,10 @@ export struct AppsTableComponent {
             .borderRadius(12)
             .margin({ right: 8 })
 
-          Picker({ range: ['应用名称', '包名', '应用描述', '应用 ID', '开发者名称', '开发者英文名称', '供应商', '类型名', '标签名', '应用分类', '最小api', '目标api'] })
-            .width(120)
-            .height(40)
-            .margin({ right: 8 })
+          // Picker({ range: ['应用名称', '包名', '应用描述', '应用 ID', '开发者名称', '开发者英文名称', '供应商', '类型名', '标签名', '应用分类', '最小api', '目标api'] })
+          //   .width(120)
+          //   .height(40)
+          //   .margin({ right: 8 })
 
           Button('搜索', { type: ButtonType.Normal })
             .backgroundColor('#f59e0b')
