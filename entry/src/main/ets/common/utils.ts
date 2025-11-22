@@ -1,4 +1,4 @@
-import type { BackendDateType } from './types';
+import type { BackendDateType } from '../common/types';
 
 // 格式化数字
 export function formatNumber(num: number | undefined): string {

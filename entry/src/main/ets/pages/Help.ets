@@ -1,16 +1,16 @@
-import { Component, Entry, Column, Row, Text, Color, Button } from '@kit/arkui';
-import { useRouter } from '@kit/arkui';
+import { Component, Entry, Column, Row, Text, Color, Button } from '@kit/ArkUI';
+import { router } from '@kit.ArkUI';
+
 
 @Entry
 @Component
 export struct HelpPage {
-  private router = useRouter();
 
   @Builder
   build() {
     Column({ width: '100%', maxWidth: 1024, marginHorizontal: 'auto', padding: 24, gap: 32 }) {
       // 头部导航
-      Button({ text: '返回仪表板', onClick: () => this.router.push('/dashboard'), backgroundColor: Color('#3b82f6') }).margin({ bottom: 24 })
+      Button({ text: '返回仪表板', onClick: () => router.pushUrl({url:'pages/Dashboard'}), backgroundColor: Color('#3b82f6') }).margin({ bottom: 24 })
 
       // 页面标题
       Column({ backgroundColor: Color('#eff6ff'), darkBackgroundColor: Color('#1e3a8a'), borderRadius: 16, padding: 24, marginBottom: 32 }) {

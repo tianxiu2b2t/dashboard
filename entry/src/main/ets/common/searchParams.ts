@@ -4,7 +4,7 @@ import {
     type AppListParams,
     type AppInfo,
     type AppListSortType,
-} from './types';
+} from '../common/types';
 
 export const searchText = ref('');
 export const searchKey = ref<AppListParams['search_key']>('name');

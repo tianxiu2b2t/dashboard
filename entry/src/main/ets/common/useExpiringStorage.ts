@@ -1,4 +1,3 @@
-// composables/useExpiringStorage.ts
 import { ref, watch } from 'vue';
 
 interface ExpiringStorageOptions {

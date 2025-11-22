@@ -2,7 +2,7 @@ import ky from 'ky';
 import { ref } from 'vue';
 import { type BaseAPIResponse, type ICP } from './types';
 import { BASE_API } from './dynmaticAPI';
-import { useExpiringStorage } from './composable/useExpiringStorage';
+import { useExpiringStorage } from '../common/useExpiringStorage';
 
 export const got = ky.extend({
     prefixUrl: window.location.origin + BASE_API + '/',

@@ -10,7 +10,7 @@ import {
   onMounted,
 } from '@kit/arkui';
 import MarkdownIt from 'markdown-it';
-import Loading from '../components/Loading';
+import { Loading } from '../components/Loading';
 import { fetchChangelog } from '../common/api';
 
 @Entry

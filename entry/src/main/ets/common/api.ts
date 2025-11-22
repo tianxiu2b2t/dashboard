@@ -1,8 +1,8 @@
 import {
     useExpiringStorage,
     type ExpiringStorage,
-} from './composable/useExpiringStorage';
-import { got } from './constants';
+} from '../common/useExpiringStorage';
+import { got } from '../common/constants';
 import {
     defaultAppListParams,
     defaultRankingsDownloadIncreaseParams,
