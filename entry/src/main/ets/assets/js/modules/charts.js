@@ -284,6 +284,33 @@ var DashboardCharts = (function () {
                 return colors;
             }
 
+            // 创建 SDK 图表点击事件处理器工厂函数
+            function createSdkClickHandler(data, searchKeyName, displayName) {
+                return (event, elements) => {
+                    if (elements.length > 0) {
+                        const elementIndex = elements[0].index;
+                        const sdkValue = data[elementIndex][0];
+
+                        // 设置搜索参数
+                        if (typeof searchKey !== 'undefined' && typeof searchTerm !== 'undefined' && typeof searchExact !== 'undefined') {
+                            searchKey = searchKeyName;
+                            searchTerm = sdkValue.toString();
+                            searchExact = true;
+
+                            // 更新UI
+                            document.getElementById('searchKeySelect').value = searchKeyName;
+                            document.getElementById('searchInput').value = sdkValue;
+                            document.getElementById('searchExact').checked = true;
+
+                            // 执行搜索
+                            if (typeof DashboardDataLoaders !== 'undefined' && typeof DashboardDataLoaders.loadApps === 'function') {
+                                DashboardDataLoaders.loadApps(1);
+                            }
+                        }
+                    }
+                };
+            }
+
             const minSdkColors = generateColors(data_min_sdk.length);
             const targetSdkColors = generateColors(data_target_sdk.length);
 
@@ -303,7 +330,18 @@ var DashboardCharts = (function () {
                         legend: {
                             position: "bottom",
                         },
-                    }
+                        tooltip: {
+                            callbacks: {
+                                afterBody: function(context) {
+                                    const index = context[0].dataIndex;
+                                    const sdkValue = data_min_sdk[index][0];
+                                    const sdkName = DashboardUtils.parse_sdk_version(sdkValue);
+                                    return `\n点击以搜索 minsdk=${sdkName} 的应用`;
+                                }
+                            }
+                        }
+                    },
+                    onClick: createSdkClickHandler(data_min_sdk, 'minsdk', '最小SDK')
                 }
             });
 
@@ -323,7 +361,18 @@ var DashboardCharts = (function () {
                         legend: {
                             position: "bottom",
                         },
-                    }
+                        tooltip: {
+                            callbacks: {
+                                afterBody: function(context) {
+                                    const index = context[0].dataIndex;
+                                    const sdkValue = data_target_sdk[index][0];
+                                    const sdkName = DashboardUtils.parse_sdk_version(sdkValue);
+                                    return `\n点击以搜索 target_sdk=${sdkName} 的应用`;
+                                }
+                            }
+                        }
+                    },
+                    onClick: createSdkClickHandler(data_target_sdk, 'target_sdk', '目标SDK')
                 }
             });
 

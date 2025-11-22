@@ -15,7 +15,7 @@ use crate::db::{Database, statistics::AccessLog};
 #[derive(Debug, Clone)]
 struct StatisticEntry {
     count: u64,
-    delta_since_last_sync: u64,  // 自上次同步以来的增量
+    delta_since_last_sync: u64, // 自上次同步以来的增量
     first_seen_at: DateTime<Utc>,
     last_seen_at: DateTime<Utc>,
 }
@@ -24,7 +24,7 @@ struct StatisticEntry {
 #[derive(Debug, Clone)]
 struct HourlyEntry {
     count: u64,
-    delta_since_last_sync: u64,  // 自上次同步以来的增量
+    delta_since_last_sync: u64, // 自上次同步以来的增量
 }
 
 /// UA 统计 - 存储完整的统计信息
@@ -89,7 +89,7 @@ pub async fn initialize_statistics(db: &Database, enable_logs: bool) -> anyhow::
             stat.user_agent,
             StatisticEntry {
                 count: stat.access_count as u64,
-                delta_since_last_sync: 0,  // 初始化为0
+                delta_since_last_sync: 0, // 初始化为0
                 first_seen_at: stat.first_seen_at,
                 last_seen_at: stat.last_seen_at,
             },
@@ -105,7 +105,7 @@ pub async fn initialize_statistics(db: &Database, enable_logs: bool) -> anyhow::
             stat.ip_address,
             StatisticEntry {
                 count: stat.access_count as u64,
-                delta_since_last_sync: 0,  // 初始化为0
+                delta_since_last_sync: 0, // 初始化为0
                 first_seen_at: stat.first_seen_at,
                 last_seen_at: stat.last_seen_at,
             },
@@ -208,13 +208,13 @@ async fn sync_statistics_to_db(db: &Database, access_logs: &[AccessLog]) -> anyh
     // 只收集有增量变化的条目
     let ua_data: Vec<(String, u64, DateTime<Utc>, DateTime<Utc>)> = ua_map
         .iter()
-        .filter(|entry| entry.value().delta_since_last_sync > 0)  // 只同步有变化的
+        .filter(|entry| entry.value().delta_since_last_sync > 0) // 只同步有变化的
         .map(|entry| {
             let key = entry.key();
             let value = entry.value();
             (
                 key.clone(),
-                value.delta_since_last_sync,  // 发送增量而不是总数
+                value.delta_since_last_sync, // 发送增量而不是总数
                 value.first_seen_at,
                 value.last_seen_at,
             )
@@ -225,7 +225,7 @@ async fn sync_statistics_to_db(db: &Database, access_logs: &[AccessLog]) -> anyh
     if !ua_data.is_empty() {
         let affected = db.batch_upsert_ua_statistics(&ua_data).await?;
         event!(Level::INFO, ua_affected = affected, "批量同步 UA 统计完成");
-        
+
         // 同步成功后，重置增量计数器
         for mut entry in ua_map.iter_mut() {
             entry.value_mut().delta_since_last_sync = 0;
@@ -238,11 +238,16 @@ async fn sync_statistics_to_db(db: &Database, access_logs: &[AccessLog]) -> anyh
     // 只收集有增量变化的条目
     let ip_data: Vec<(IpAddr, u64, DateTime<Utc>, DateTime<Utc>)> = ip_map
         .iter()
-        .filter(|entry| entry.value().delta_since_last_sync > 0)  // 只同步有变化的
+        .filter(|entry| entry.value().delta_since_last_sync > 0) // 只同步有变化的
         .map(|entry| {
             let key = entry.key();
             let value = entry.value();
-            (*key, value.delta_since_last_sync, value.first_seen_at, value.last_seen_at)  // 发送增量
+            (
+                *key,
+                value.delta_since_last_sync,
+                value.first_seen_at,
+                value.last_seen_at,
+            ) // 发送增量
         })
         .collect();
 
@@ -250,7 +255,7 @@ async fn sync_statistics_to_db(db: &Database, access_logs: &[AccessLog]) -> anyh
     if !ip_data.is_empty() {
         let affected = db.batch_upsert_ip_statistics(&ip_data).await?;
         event!(Level::INFO, ip_affected = affected, "批量同步 IP 统计完成");
-        
+
         // 同步成功后，重置增量计数器
         for mut entry in ip_map.iter_mut() {
             entry.value_mut().delta_since_last_sync = 0;
@@ -263,10 +268,14 @@ async fn sync_statistics_to_db(db: &Database, access_logs: &[AccessLog]) -> anyh
     // 只收集有增量变化的条目
     let ua_hourly_data: Vec<(String, DateTime<Utc>, u64)> = ua_hourly_map
         .iter()
-        .filter(|entry| entry.value().delta_since_last_sync > 0)  // 只同步有变化的
+        .filter(|entry| entry.value().delta_since_last_sync > 0) // 只同步有变化的
         .map(|entry| {
             let (user_agent, hour_timestamp) = entry.key();
-            (user_agent.clone(), *hour_timestamp, entry.value().delta_since_last_sync)  // 发送增量
+            (
+                user_agent.clone(),
+                *hour_timestamp,
+                entry.value().delta_since_last_sync,
+            ) // 发送增量
         })
         .collect();
 
@@ -280,7 +289,7 @@ async fn sync_statistics_to_db(db: &Database, access_logs: &[AccessLog]) -> anyh
             ua_hourly_affected = affected,
             "批量同步 UA 每小时统计完成"
         );
-        
+
         // 同步成功后，重置增量计数器
         for mut entry in ua_hourly_map.iter_mut() {
             entry.value_mut().delta_since_last_sync = 0;
@@ -293,10 +302,10 @@ async fn sync_statistics_to_db(db: &Database, access_logs: &[AccessLog]) -> anyh
     // 只收集有增量变化的条目
     let ip_hourly_data: Vec<(IpAddr, DateTime<Utc>, u64)> = ip_hourly_map
         .iter()
-        .filter(|entry| entry.value().delta_since_last_sync > 0)  // 只同步有变化的
+        .filter(|entry| entry.value().delta_since_last_sync > 0) // 只同步有变化的
         .map(|entry| {
             let (ip, hour_timestamp) = entry.key();
-            (*ip, *hour_timestamp, entry.value().delta_since_last_sync)  // 发送增量
+            (*ip, *hour_timestamp, entry.value().delta_since_last_sync) // 发送增量
         })
         .collect();
 
@@ -310,7 +319,7 @@ async fn sync_statistics_to_db(db: &Database, access_logs: &[AccessLog]) -> anyh
             ip_hourly_affected = affected,
             "批量同步 IP 每小时统计完成"
         );
-        
+
         // 同步成功后，重置增量计数器
         for mut entry in ip_hourly_map.iter_mut() {
             entry.value_mut().delta_since_last_sync = 0;
@@ -478,7 +487,7 @@ pub async fn middle_response(
     // 先尝试更新现有条目
     if let Some(mut entry) = ua_map.get_mut(&user_agent) {
         entry.count += 1;
-        entry.delta_since_last_sync += 1;  // 同时更新增量
+        entry.delta_since_last_sync += 1; // 同时更新增量
         entry.last_seen_at = now;
     } else {
         // 如果是新条目，检查是否超过上限
@@ -487,7 +496,7 @@ pub async fn middle_response(
                 user_agent.clone(),
                 StatisticEntry {
                     count: 1,
-                    delta_since_last_sync: 1,  // 新条目的delta为1
+                    delta_since_last_sync: 1, // 新条目的delta为1
                     first_seen_at: now,
                     last_seen_at: now,
                 },
@@ -505,7 +514,7 @@ pub async fn middle_response(
     // 先尝试更新现有条目
     if let Some(mut entry) = ip_map.get_mut(&ip) {
         entry.count += 1;
-        entry.delta_since_last_sync += 1;  // 同时更新增量
+        entry.delta_since_last_sync += 1; // 同时更新增量
         entry.last_seen_at = now;
     } else {
         // 如果是新条目，检查是否超过上限
@@ -514,7 +523,7 @@ pub async fn middle_response(
                 ip,
                 StatisticEntry {
                     count: 1,
-                    delta_since_last_sync: 1,  // 新条目的delta为1
+                    delta_since_last_sync: 1, // 新条目的delta为1
                     first_seen_at: now,
                     last_seen_at: now,
                 },

@@ -42,8 +42,8 @@ pub fn statistics_router(app_state: Arc<AppState>) -> AppRouter {
         .route("/history", get(statistics_handlers::get_history_statistics))
         // 获取每小时统计趋势
         .route("/hourly", get(statistics_handlers::get_hourly_statistics))
-        // 获取访问日志
-        .route("/logs", get(statistics_handlers::get_access_logs))
+        // 获取访问日志 不行, 这玩意不给看
+        // .route("/logs", get(statistics_handlers::get_access_logs))
         // 获取统计概览
         .route("/summary", get(statistics_handlers::get_statistics_summary))
         .with_state(app_state)
@@ -67,6 +67,14 @@ pub fn api_router(app_state: Arc<AppState>) -> AppRouter {
         .route(
             "/apps/metrics/{pkg_id}",
             get(handlers::get_app_download_history),
+        )
+        // 专题查询相关路由
+        // 根据专题ID查询专题信息
+        .route("/substance/{substance_id}", get(handlers::query_substance))
+        // 获取分页的专题列表
+        .route(
+            "/substance/list/{page}",
+            get(handlers::substance_list_paged),
         )
         // 新增排行API路由
         // 下载量增量排行榜
@@ -148,7 +156,11 @@ pub fn create_router(app_state: Arc<AppState>) -> Router {
     info(
         title = "鸿蒙应用市场 第三方API",
         description = "鸿蒙应用市场 第三方API - 提供鸿蒙应用市场数据查询、统计分析等功能",
-        version = env!("CARGO_PKG_VERSION")
+        version = env!("CARGO_PKG_VERSION"),
+        license(
+            name = "GPL-3.0",
+            identifier = "GPL-3.0"
+        )
     ),
     paths(
         // 应用查询
@@ -172,6 +184,9 @@ pub fn create_router(app_state: Arc<AppState>) -> Router {
         // 应用提交
         handlers::submit_app,
         handlers::submit_substance,
+        // 专题查询
+        handlers::query_substance,
+        handlers::substance_list_paged,
         // 飞书集成
         handlers::feishu_meta,
         handlers::feishu_table_meta,
@@ -180,7 +195,7 @@ pub fn create_router(app_state: Arc<AppState>) -> Router {
         statistics_handlers::get_current_statistics,
         statistics_handlers::get_history_statistics,
         statistics_handlers::get_hourly_statistics,
-        statistics_handlers::get_access_logs,
+        // statistics_handlers::get_access_logs,
         statistics_handlers::get_statistics_summary,
     ),
     components(
@@ -191,10 +206,14 @@ pub fn create_router(app_state: Arc<AppState>) -> Router {
             crate::server::state::AppQueryParam,
             crate::server::state::IntervalParams,
             crate::server::state::RankingQuery,
+            crate::server::state::SubstanceListQuery,
             // 应用模型
             crate::model::FullAppInfo,
             crate::model::ShortAppInfo,
             crate::model::ShortAppRating,
+            // 专题模型
+            crate::model::FullSubstanceInfo,
+            crate::model::ShortSubstanceInfo,
             // 统计类型
             crate::server::statistics_handlers::CurrentStatisticsResponse,
             crate::server::statistics_handlers::UaStatEntry,
@@ -211,7 +230,8 @@ pub fn create_router(app_state: Arc<AppState>) -> Router {
         (name = "排行榜", description = "各类应用排行榜"),
         (name = "统计图表", description = "数据分布统计图表"),
         (name = "应用提交", description = "应用信息提交接口"),
-        (name = "飞书集成", description = "飞书数据连接器集成"),
+        (name = "专题查询", description = "专题信息查询相关接口"),
+        (name = "飞书集成", description = "飞书数据连接器集成(目前未实现)"),
         (name = "访问统计", description = "API访问统计分析"),
     )
 )]

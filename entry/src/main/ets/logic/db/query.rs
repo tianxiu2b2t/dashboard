@@ -6,17 +6,50 @@ use sqlx::{Row, postgres::types::PgInterval};
 
 use std::{ops::Range, sync::OnceLock};
 
-use crate::db::{AppCounts, Database, DbSearch, DownloadIncrement, PaginatedAppInfo};
+use crate::db::{AppCounts, Database, DbSearch, DownloadIncrement, PageInfo};
 use crate::db::{
     AppIconInfo,
     read_data::{SELECT_APP_INFO_FIELDS, SELECT_APP_METRIC_FIELDS, SELECT_APP_RATING_FIELDS},
 };
-use crate::model::{AppInfo, AppMetric, AppQuery, AppRating, FullAppInfo, ShortAppRating};
+use crate::model::{
+    AppInfo, AppMetric, AppQuery, AppRating, FullAppInfo, FullSubstanceInfo, ShortAppInfo,
+    ShortAppRating, ShortSubstanceInfo,
+};
 
 pub static SELECT_MAX_LIMIT: OnceLock<u32> = OnceLock::new();
 
 pub fn get_max_limit() -> u32 {
     *SELECT_MAX_LIMIT.get().unwrap_or(&100)
+}
+
+
+/// 递归清洗 JSON，逻辑与 SQL 中的 normalize_json_by_value 一致
+/// 如果 Value 是字符串且包含 "trace" (不区分大小写)，则替换为 "TRACE_MASKED"
+fn normalize_json_for_comparison(val: &Value) -> Value {
+    match val {
+        // 1. 如果是对象，递归处理每个字段的值
+        Value::Object(map) => {
+            let mut new_map = serde_json::Map::new();
+            for (k, v) in map {
+                new_map.insert(k.clone(), normalize_json_for_comparison(v));
+            }
+            Value::Object(new_map)
+        }
+        // 2. 如果是数组，递归处理每个元素
+        Value::Array(arr) => {
+            Value::Array(arr.iter().map(normalize_json_for_comparison).collect())
+        }
+        // 3. 如果是字符串，检查是否包含 "trace"
+        Value::String(s) => {
+            if s.to_lowercase().contains("trace") {
+                Value::String("TRACE_MASKED".to_string())
+            } else {
+                Value::String(s.clone())
+            }
+        }
+        // 4. 其他类型直接克隆
+        _ => val.clone(),
+    }
 }
 
 impl Database {
@@ -49,6 +82,44 @@ impl Database {
         count.map(|c| c > 0).unwrap_or(false)
     }
 
+    /// 获取指定 substance 的最后一条原始JSON数据
+    pub async fn get_last_substance_raw_json(&self, substance_id: &str) -> Option<Value> {
+        let query = r#"
+            SELECT raw_json_substance
+            FROM substance_history
+            WHERE substance_id = $1
+            ORDER BY created_at DESC
+            LIMIT 1
+        "#;
+
+        let result = sqlx::query(query)
+            .bind(substance_id)
+            .fetch_optional(&self.pool)
+            .await
+            .ok()?;
+
+        result.and_then(|r| r.try_get("raw_json_substance").ok())
+    }
+
+    /// 检查新的 substance 数据是否与最后一条数据相同（忽略 trace 信息）
+        pub async fn is_same_substance_data(&self, substance_id: &str, new_data: &Value) -> bool {
+            self.get_last_substance_raw_json(substance_id)
+                .await
+                // 假设 .await 返回的是 Result<Option<Value>> 或 Option<Value>
+                // 这里保留你原本的 map/unwrap_or 结构
+                .map(|last_data| {
+                    // 1. 清洗数据库里的旧数据
+                    let cleaned_last = normalize_json_for_comparison(&last_data);
+                    // 2. 清洗传入的新数据
+                    let cleaned_new = normalize_json_for_comparison(new_data);
+
+                    // 3. 比较清洗后的版本
+                    cleaned_last == cleaned_new
+                })
+                .unwrap_or(false)
+        }
+
+    /// 获取指定应用的最后一条原始JSON数据
     pub async fn have_app_by_name(&self, app_name: &str) -> bool {
         let query = "SELECT COUNT(*) FROM app_info WHERE name = $1";
         let count: Option<i64> = sqlx::query(query)
@@ -122,7 +193,7 @@ impl Database {
 
     pub async fn get_app_rating(&self, app: &AppQuery) -> Option<AppRating> {
         let query = format!(
-            "SELECT {} FROM app_rating WHERE {} = $1",
+            "SELECT {} FROM app_rating WHERE {} = $1 ORDER BY id DESC LIMIT 1",
             SELECT_APP_RATING_FIELDS,
             app.app_db_name()
         );
@@ -156,7 +227,10 @@ impl Database {
     pub async fn is_new_app_rating(&self, app: &AppQuery, app_rating: &AppRating) -> bool {
         self.get_app_rating(app)
             .await
-            .map(|d| d != *app_rating)
+            .map(|mut d| {
+                d.update_from_db(app_rating);
+                &d != app_rating
+            })
             .unwrap_or(true)
     }
 
@@ -194,14 +268,18 @@ impl Database {
     pub async fn is_same_app_metric(&self, app: &AppQuery, app_metric: &AppMetric) -> bool {
         self.get_app_last_metric(app)
             .await
-            .map(|last_metric| last_metric == *app_metric)
+            .map(|last_metric| {
+                let mut new_metric = app_metric.clone();
+                new_metric.update_from_db(&last_metric);
+                new_metric == last_metric
+            })
             .unwrap_or(false)
     }
 
     /// 获取 app 最后一次的 metric
     pub async fn get_app_last_metric(&self, app: &AppQuery) -> Option<AppMetric> {
         let query = format!(
-            "SELECT {} FROM app_metrics WHERE {} = $1",
+            "SELECT {} FROM app_metrics WHERE {} = $1 ORDER BY id DESC LIMIT 1",
             SELECT_APP_METRIC_FIELDS,
             app.app_db_name()
         );
@@ -281,24 +359,16 @@ impl Database {
         let order_clause = if sort_desc { "DESC" } else { "ASC" };
 
         let app_infos = match search {
-            Some(DbSearch {
-                key,
-                value,
-                is_exact,
-                not_null,
-            }) => {
-                // 搜索模式下参数绑定： $1(value), $2(limit), $3(offset), $4(bool), $5(bool)
-                let not_null_condition = if not_null {
-                    format!("AND {sort_key} IS NOT NULL")
-                } else {
-                    "".to_string()
-                };
+            Some(search) => {
+                // 搜索模式下参数绑定： $1(value), $2(limit), $3(offset), $4(bool), $5(bool), $6(bool)
+                let key = search.key.as_str();
+                let search_method = search.search_method();
                 let query = format!(
                     r#"
                     SELECT *
                     FROM app_full_info
-                    WHERE {key} ILIKE $1
-                    {not_null_condition}
+                    WHERE {key}::text {search_method} $1
+                    AND (NOT $6::boolean OR {sort_key} IS NOT NULL)
                     AND (NOT $4::boolean OR dev_en_name NOT ILIKE '%huawei%')
                     AND (NOT $5::boolean OR pkg_name NOT LIKE 'com.atomicservice%')
                     ORDER BY {sort_key} {order_clause}
@@ -306,15 +376,12 @@ impl Database {
                 "#
                 );
                 sqlx::query_as::<_, FullAppInfo>(&query)
-                    .bind(if is_exact {
-                        value
-                    } else {
-                        format!("%{value}%")
-                    }) // $1 (搜索值)
+                    .bind(search.search_value()) // $1 (搜索值)
                     .bind(limit) // $2 (LIMIT)
                     .bind(offset) // $3 (OFFSET)
                     .bind(exclude_huawei) // $4 (排除华为)
                     .bind(exclude_atomic) // $5 (排除 Atomic)
+                    .bind(search.not_null) // $6 (not null 检查)
                     .fetch_all(&self.pool)
                     .await?
             }
@@ -411,39 +478,32 @@ impl Database {
         search: Option<DbSearch>,
         exclude_huawei: bool,
         exclude_atomic: bool,
-    ) -> Result<PaginatedAppInfo<D>> {
+    ) -> Result<PageInfo<D>> {
         // --- 1. 动态统计总数 (使用 SQL 条件判断) ---
         let total_count: i64 = match &search {
-            Some(DbSearch {
+            Some(search @ DbSearch {
                 key,
-                value,
-                is_exact,
+                value: _,
+                is_exact: _,
                 not_null,
             }) => {
-                // 搜索模式下的 COUNT 查询： $1(value), $2(bool: huawei), $3(bool: atomic)
-                let not_null_condition = if *not_null {
-                    format!("AND {} IS NOT NULL", key)
-                } else {
-                    "".to_string()
-                };
+                // 搜索模式下的 COUNT 查询： $1(value), $2(bool: huawei), $3(bool: atomic), $4(bool: not_null)
+                let search_method = search.search_method();
                 let query = format!(
                     r#"
                     SELECT COUNT(*)
                     FROM app_full_info
-                    WHERE {key} ILIKE $1
-                    {not_null_condition}
+                    WHERE {key}::text {search_method} $1
+                    AND (NOT $4::boolean OR {key} IS NOT NULL)
                     AND (NOT $2::boolean OR dev_en_name NOT ILIKE '%huawei%')
                     AND (NOT $3::boolean OR pkg_name NOT LIKE 'com.atomicservice%')
                     "#
                 );
                 let result: (i64,) = sqlx::query_as(&query)
-                    .bind(if *is_exact {
-                        value.clone()
-                    } else {
-                        format!("%{}%", value)
-                    }) // $1 (Search Value)
+                    .bind(search.search_value()) // $1 (Search Value)
                     .bind(exclude_huawei) // $2
                     .bind(exclude_atomic) // $3
+                    .bind(not_null) // $4
                     .fetch_one(&self.pool)
                     .await?;
                 result.0
@@ -453,8 +513,7 @@ impl Database {
                 let query = r#"
                     SELECT COUNT(*)
                     FROM app_full_info
-                    WHERE 1=1
-                    AND (NOT $1::boolean OR dev_en_name NOT ILIKE '%huawei%')
+                    WHERE (NOT $1::boolean OR dev_en_name NOT ILIKE '%huawei%')
                     AND (NOT $2::boolean OR pkg_name NOT LIKE 'com.atomicservice%')
                 "#;
                 let result: (i64,) = sqlx::query_as(query)
@@ -487,7 +546,7 @@ impl Database {
             .map(D::from)
             .collect();
 
-        Ok(PaginatedAppInfo {
+        Ok(PageInfo {
             data,
             total_count: total_count as u32,
             page,
@@ -933,5 +992,122 @@ impl Database {
             .fetch_optional(&self.pool)
             .await
             .ok()?
+    }
+
+    /// 根据 substance_id 查询专题信息
+    pub async fn get_substance_by_id(
+        &self,
+        substance_id: &str,
+    ) -> Result<Option<FullSubstanceInfo>> {
+        // 先查询专题基本信息
+        #[derive(sqlx::FromRow)]
+        struct SubstanceBasicInfo {
+            substance_id: String,
+            title: String,
+            subtitle: Option<String>,
+            name: Option<String>,
+            comment: Option<serde_json::Value>,
+            created_at: DateTime<Local>,
+        }
+
+        const SUBSTANCE_QUERY: &str = r#"
+            SELECT substance_id, title, subtitle, name, comment, created_at
+            FROM substance_info
+            WHERE substance_id = $1
+        "#;
+
+        let substance_info: Option<SubstanceBasicInfo> = sqlx::query_as(SUBSTANCE_QUERY)
+            .bind(substance_id)
+            .fetch_optional(&self.pool)
+            .await?;
+
+        let Some(info) = substance_info else {
+            return Ok(None);
+        };
+
+        // 查询该专题下的所有应用
+        const APPS_QUERY: &str = r#"
+            SELECT
+                ai.app_id,
+                ai.name,
+                ai.pkg_name,
+                ai.icon_url,
+                ai.created_at as create_at
+            FROM substance_app_map sam
+            INNER JOIN app_info ai ON sam.app_id = ai.app_id
+            WHERE sam.substance_id = $1
+            ORDER BY ai.app_id
+        "#;
+
+        let apps: Vec<ShortAppInfo> = sqlx::query_as(APPS_QUERY)
+            .bind(substance_id)
+            .fetch_all(&self.pool)
+            .await?;
+
+        Ok(Some(FullSubstanceInfo {
+            substance_id: info.substance_id,
+            title: info.title,
+            subtitle: info.subtitle,
+            name: info.name,
+            comment: info.comment,
+            created_at: info.created_at,
+            apps,
+        }))
+    }
+
+    /// 分页获取专题列表（简略信息）
+    pub async fn get_substance_list_paged(
+        &self,
+        page: u32,
+        page_size: u32,
+        sort_key: &str,
+        desc: bool,
+    ) -> Result<PageInfo<ShortSubstanceInfo>> {
+        let safe_limit = page_size.min(get_max_limit());
+        let offset = page * safe_limit;
+
+        // 验证排序字段
+        let valid_sort_fields = ["created_at", "substance_id"];
+        let sort_field = if valid_sort_fields.contains(&sort_key) {
+            sort_key
+        } else {
+            "created_at"
+        };
+
+        let order = if desc { "DESC" } else { "ASC" };
+
+        // 构建查询语句
+        let query = format!(
+            r#"
+            SELECT substance_id, title, subtitle, created_at
+            FROM substance_info
+            ORDER BY {} {}
+            LIMIT $1 OFFSET $2
+            "#,
+            sort_field, order
+        );
+
+        let count_query = "SELECT COUNT(*) FROM substance_info";
+
+        let results = sqlx::query_as::<_, ShortSubstanceInfo>(&query)
+            .bind(safe_limit as i64)
+            .bind(offset as i64)
+            .fetch_all(&self.pool)
+            .await?;
+
+        let total_count: i64 = sqlx::query_scalar(count_query)
+            .fetch_one(&self.pool)
+            .await?;
+
+        let total_count = total_count as u32;
+        let total_pages = total_count.div_ceil(safe_limit);
+
+        Ok(PageInfo {
+            data: results,
+            total_count,
+            page,
+            page_size: safe_limit,
+            total_pages,
+        })
     }
 }

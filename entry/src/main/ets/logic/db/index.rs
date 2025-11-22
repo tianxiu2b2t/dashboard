@@ -18,7 +18,7 @@ pub mod statistics;
 
 /// 分页查询结果
 #[derive(Debug, Deserialize, Serialize)]
-pub struct PaginatedAppInfo<D> {
+pub struct PageInfo<D> {
     pub data: Vec<D>,
     pub total_count: u32,
     pub page: u32,
@@ -94,11 +94,21 @@ impl DbSearch {
     /// exact: 不动
     /// not exact: %value%
     pub fn search_value(&self) -> String {
-        if self.is_exact {
+        if self.is_exact || self.is_int_search() {
             self.value.clone()
         } else {
             format!("%{}%", self.value)
         }
+    }
+    pub fn is_int_search(&self) -> bool {
+        matches!(self.key.as_str(), "minsdk" | "target_sdk")
+    }
+    pub fn search_method(&self) -> String {
+        if self.is_int_search() {
+            "="
+        } else {
+            "ILIKE"
+        }.to_string()
     }
 }
 
@@ -200,8 +210,12 @@ impl Database {
         let is_new = !self.substance_exists(&substance.id).await;
         self.insert_substance(substance, if is_new { comment } else { None })
             .await?;
-        self.insert_substance_history(&substance.id, raw_substance)
-            .await?;
+
+        // 只在数据发生变化时插入历史记录
+        if !self.is_same_substance_data(&substance.id, raw_substance).await {
+            self.insert_substance_history(&substance.id, raw_substance)
+                .await?;
+        }
 
         for app_query in &substance.data {
             let query = self.app_query_to_app_id(app_query).await?;

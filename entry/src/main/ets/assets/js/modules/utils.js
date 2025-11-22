@@ -93,10 +93,10 @@ var DashboardUtils = (function () {
             //     return "3.0.0(8)";
             // case 9:
             //     return "3.1.0(9)";
-            case 10:
-                return "5.0 alpha(10)";
-            case 11:
-                return "5.0 beta(11)";
+            // case 10:
+            //     return "5.0 alpha(10)";
+            // case 11:
+            //     return "5.0 beta(11)";
             case 12:
                 return "5.0.0(12)";
             case 13:

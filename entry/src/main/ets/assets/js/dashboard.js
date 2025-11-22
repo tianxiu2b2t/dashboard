@@ -187,11 +187,7 @@ async function queryApp() {
  */
 function renderResult(data) {
     const resultContent = document.getElementById("resultContent");
-    const { info, metric, rating } = data;
-    const new_app = data.new_app;
-    const new_info = data.new_info;
-    const new_metric = data.new_metric;
-    const new_rating = data.new_rating;
+    const { full_info, new_app, new_info, new_metric, new_rating } = data;
     const is_new = !!(new_app || new_info || new_metric || new_rating);
 
     if (!info || !metric) {
@@ -199,9 +195,9 @@ function renderResult(data) {
         return;
     }
 
-    const iconUrl = info.icon_url || '';
-    const downloadCount = metric.download_count || 0;
-    const name = info.name || '未知应用';
+    const iconUrl = full_info.icon_url || '';
+    const downloadCount = full_info.download_count || 0;
+    const name = full_info.name || '未知应用';
     const same_css = `<span class="bg-green-100 text-green-800 px-2 py-1 rounded-xl text-xs`;
 
     resultContent.innerHTML = `
@@ -209,8 +205,8 @@ function renderResult(data) {
             ${iconUrl ? `<img src="${iconUrl}" alt="图标" class="w-12 h-12 rounded-xl object-cover">` : '<div class="w-12 h-12 bg-gray-300 rounded-xl"></div>'}
             <div>
                 <h4 class="font-semibold">${name}</h4>
-                <p class="text-sm text-gray-600">包名: ${info.pkg_name || 'N/A'}</p>
-                ${rating ? `<p class="text-sm text-gray-600">评分: ${rating.average_rating || 'N/A'} (${rating.total_ratings || 0} 人评价)</p>` : ''}
+                <p class="text-sm text-gray-600">包名: ${full_info.pkg_name || 'N/A'}</p>
+                ${full_info.average_rating ? `<p class="text-sm text-gray-600">评分: ${full_info.average_rating || 'N/A'} (${full_info.total_ratings || 0} 人评价)</p>` : ''}
                 ${new_app ? `${same_css} ml-3">是新APP！</span>` : ''}
                 ${new_info ? `${same_css} ml-2">基本信息有更新</span>` : ''}
                 ${new_metric ? `${same_css} ml-2">指标数据有更新</span>` : ''}
@@ -220,11 +216,11 @@ function renderResult(data) {
         </div>
         <div class="grid grid-cols-2 gap-2 text-sm">
             <div><strong>下载量:</strong> ${downloadCount > 10000 ? (downloadCount / 10000).toFixed(1) + '万' : downloadCount}</div>
-            ${metric.size_bytes ? `<div><strong>大小:</strong> ${(metric.size_bytes / 1024 / 1024).toFixed(1)} MB</div>` : ''}
-            ${metric.version ? `<div><strong>版本:</strong> ${metric.version}</div>` : ''}
-            ${metric.price ? `<div><strong>价格:</strong> ${metric.price}</div>` : ''}
-            ${info.developer_name ? `<div><strong>开发者:</strong> ${info.developer_name}</div>` : ''}
-            ${info.kind_name ? `<div><strong>分类:</strong> ${info.kind_name}</div>` : ''}
+            <div><strong>大小:</strong> ${(full_info.size_bytes / 1024 / 1024).toFixed(1)} MB</div>
+            <div><strong>版本:</strong> ${full_info.version}</div>
+            <div><strong>价格:</strong> ${full_info.price}</div>
+            <div><strong>开发者:</strong> ${full_info.developer_name}</div>
+            <div><strong>分类:</strong> ${full_info.kind_name}</div>
         </div>
     `;
 }
@@ -506,8 +502,13 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("th[data-sort]").forEach((header) => {
         header.addEventListener("click", () => {
             const field = header.getAttribute("data-sort");
+            // 默认升序，但对 listed_at 字段第一次点击设置为降序（最新应用在前）
             let desc = false;
+            if (field === "listed_at") {
+                desc = true;
+            }
             if (field === currentSort.field) {
+                // 如果是同一字段，则切换排序方向
                 desc = currentSort.desc === false ? true : false;
             }
             currentSort = { field, desc };

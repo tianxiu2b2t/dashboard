@@ -24,6 +24,28 @@ pub struct ShortAppRating {
     pub total_star_rating_count: i32,
 }
 
+/// 专题完整信息
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, ToSchema)]
+pub struct FullSubstanceInfo {
+    pub substance_id: String,
+    pub title: String,
+    pub subtitle: Option<String>,
+    pub name: Option<String>,
+    pub comment: Option<serde_json::Value>,
+    pub created_at: DateTime<Local>,
+    /// 专题包含的应用列表
+    pub apps: Vec<ShortAppInfo>,
+}
+
+/// 专题简略信息
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, ToSchema, FromRow)]
+pub struct ShortSubstanceInfo {
+    pub substance_id: String,
+    pub title: String,
+    pub subtitle: Option<String>,
+    pub created_at: DateTime<Local>,
+}
+
 /// 2. app_full_info 表
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq, ToSchema)]
 pub struct FullAppInfo {
@@ -325,7 +347,7 @@ impl AppInfo {
 }
 
 /// 简化过的 AppInfo
-#[derive(Debug, Deserialize, Serialize, ToSchema)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, ToSchema, FromRow)]
 pub struct ShortAppInfo {
     pub app_id: String,
     pub name: String,

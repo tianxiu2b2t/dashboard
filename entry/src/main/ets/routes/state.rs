@@ -183,6 +183,8 @@ impl AppListQuery {
                     | "kind_name"
                     | "kind_type_name"
                     | "tag_name"
+                    | "minsdk"
+                    | "target_sdk"
             )
         } else {
             false
@@ -281,5 +283,42 @@ impl AppQueryParam {
                 .as_ref()
                 .map(|pkg_name| AppQuery::PkgName(pkg_name.clone()))
         }
+    }
+}
+
+// 专题列表查询参数
+#[derive(Debug, Deserialize, Serialize, ToSchema, IntoParams)]
+pub struct SubstanceListQuery {
+    /// 排序字段
+    pub sort: Option<String>,
+    /// 是否降序
+    pub desc: Option<bool>,
+    /// 每页大小
+    pub page_size: Option<u32>,
+}
+
+impl SubstanceListQuery {
+    pub fn is_valid_sort(&self) -> bool {
+        if let Some(sort_field) = &self.sort {
+            matches!(sort_field.as_str(), "created_at" | "substance_id")
+        } else {
+            false
+        }
+    }
+
+    pub fn sort_key(&self) -> String {
+        if self.is_valid_sort() {
+            self.sort.as_deref().unwrap_or("created_at").to_string()
+        } else {
+            "created_at".to_string()
+        }
+    }
+
+    pub fn raw_sort_key(&self) -> Option<String> {
+        self.sort.clone()
+    }
+
+    pub fn page_size(&self) -> u32 {
+        self.page_size.unwrap_or(100)
     }
 }
