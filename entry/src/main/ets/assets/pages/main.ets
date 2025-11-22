@@ -19,9 +19,7 @@ struct Dashboard {
   @State showChangelogModal: boolean = false
 
   build() {
-    Scroll(){
-    Column() {
-
+    Scroll(){ Column() {
       HeaderComponent()
       StatsCardsComponent()
       TopDownloadChartComponent()
