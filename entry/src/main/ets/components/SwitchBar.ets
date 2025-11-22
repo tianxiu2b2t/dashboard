@@ -1,5 +1,5 @@
 import { Component, Entry, Column, Row,
-  Button, Color, ref, nextTick, defineExpose } from '@kit/arkui';
+  Button, Color, ref, nextTick, defineExpose } from "@kit.ArkUI";
 
 @Entry
 @Component

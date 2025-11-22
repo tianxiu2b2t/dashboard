@@ -1,4 +1,4 @@
-import { Component, Entry, Prop, Column, Row, Text, TextField, Button, Checkbox, Color, ScrollView } from '@kit/arkui';
+import { Component, Entry, Prop, Column, Row, Text, TextField, Button, Checkbox, Color, ScrollView } from "@kit.ArkUI";
 import type { AppInfo, AppListParams, AppListSortType } from '../common/types';
 import { fetchAppList } from '../common/api';
 import { formatNumber, formatSize, formatDate } from '../common/utils';

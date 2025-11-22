@@ -1,4 +1,4 @@
-import { Component, Entry, Prop, Column, TextField, Text, Color, ref, onMounted, nextTick } from '@kit/arkui';
+import { Component, Entry, Prop, Column, TextField, Text, Color, ref, onMounted, nextTick } from "@kit.ArkUI";
 
 @Entry
 @Component

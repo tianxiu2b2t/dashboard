@@ -1,66 +1,103 @@
-import { Component, Entry, Column, Row, Text, Button, Color } from '@kit/arkui';
+import router from '@ohos.router';
 
 @Entry
 @Component
 export struct ContactPage {
+  contacts = [
+    { name: 'shenjack (主要负责人)', email: '3695888@qq.com', iconColor: '#8b5cf6' },
+    { name: 'tianxiu2b2t (v2站网页负责人)', email: 'administrator@ttb-network.top', iconColor: '#8b5cf6' },
+  ];
+
+  @Builder
+  contactItem(contact: { name: string, email: string, iconColor: string }) {
+    Row() {
+      Column() {}
+      .width(24)
+      .height(24)
+      .backgroundColor(Color.Red)
+      .borderRadius(4)
+
+      Column() {
+        Text(contact.name)
+          .fontWeight(FontWeight.Medium)
+          .fontColor('#111827');
+
+        Text(contact.email)
+          .fontSize(14)
+          .fontColor('#4b5563');
+      }.margin({ left: 8 })
+    }.margin({ top: 16 })
+  }
+
   @Builder
   build() {
-    Column({ width: '100%', maxWidth: 1024, padding: 16 }) {
+    Column() {
+
       // 返回按钮
-      Button({
-        text: '返回仪表板',
-        onClick: () => window.location.href = '/dashboard',
-        backgroundColor: Color('transparent'),
-        color: Color('#3b82f6'),
-        borderRadius: 6,
-      }).margin({ bottom: 16 })
+      Column() {
+        Button('返回仪表板')
+          .width('100%')
+          .backgroundColor(Color.Transparent)
+          .borderRadius(6)
+          .fontColor('#3b82f6')
+          .onClick(() => router.pushUrl({ url: 'pages/Dashboard' }))
+      }
+      .margin({ bottom: 16 });
 
       // 页面标题
-      Column({
-        backgroundColor: Color('#f5f3ff'),
-        padding: 16,
-        borderRadius: 16,
-        marginBottom: 32,
-      }) {
-        Text('问题反馈 & 交流').fontSize(24).fontWeight('bold').color(Color('#6b21a8'))
+      Column() {
+        Text('问题反馈 & 交流')
+          .fontSize(24)
+          .fontWeight(FontWeight.Bold)
+          .fontColor('#6b21a8');
+
         Text('如有任何问题、建议或合作意向，请通过以下方式联系我们')
-          .fontSize(14).color(Color('#4b5563')).margin({ top: 4 })
+          .fontSize(14)
+          .fontColor('#4b5563')
+          .margin({ top: 4 });
       }
+      .backgroundColor('#f5f3ff')
+      .borderRadius(16)
+      .padding(16)
+      .margin({ bottom: 32 })
 
       // 联系方式卡片
-      Column({
-        backgroundColor: Color('#ffffff'),
-        borderRadius: 16,
-        padding: 16,
-        marginBottom: 32,
-        shadow: 'md',
-      }) {
-        Text('联系方式').fontSize(20).fontWeight('semibold').color(Color('#111827'))
+      Column() {
+        Text('联系方式')
+          .fontSize(20)
+          .fontWeight(FontWeight.Medium)
+          .fontColor('#111827');
 
-        // 联系人
-        const contacts = [
-          { name: 'shenjack (主要负责人)', email: '3695888@qq.com', iconColor: '#8b5cf6' },
-          { name: 'tianxiu2b2t (v2站网页负责人)', email: 'administrator@ttb-network.top', iconColor: '#8b5cf6' },
-        ];
-        contacts.forEach(contact => {
-          Row({ marginTop: 16, gap: 8 }) {
-            Column({ width: 24, height: 24, backgroundColor: Color(contact.iconColor), borderRadius: 4 }) {}
-            Column() {
-              Text(contact.name).fontWeight('medium').color(Color('#111827'))
-              Text(contact.email).fontSize(14).color(Color('#4b5563'))
-            }
-          }
+        ForEach(this.contacts, (item) => {
+          this.contactItem(item);
         });
 
         // QQ 群
-        Row({ marginTop: 16, gap: 8 }) {
-          Column({ width: 24, height: 24, backgroundColor: Color('#3b82f6'), borderRadius: 4 }) {}
+        Row() {
+          Column() {}
+          .width(24)
+          .height(24)
+          .backgroundColor('#3b82f6')
+          .borderRadius(4)
+
           Column() {
-            Text('QQ群').fontWeight('medium').color(Color('#111827'))
-            Text('757273833').fontSize(14).color(Color('#4b5563'))
+            Text('QQ群')
+              .fontWeight(FontWeight.Medium)
+              .fontColor('#111827');
+
+            Text('757273833')
+              .fontSize(14)
+              .fontColor('#4b5563');
           }
+          .margin({ left: 8 })
         }
+        .margin({ top: 16 })
       }
+      .backgroundColor(Color.White)
+      .borderRadius(16)
+      .padding(16)
+      .margin({ bottom: 32 })
+
     }
   }
 }

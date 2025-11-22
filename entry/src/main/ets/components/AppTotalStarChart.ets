@@ -1,4 +1,4 @@
-import { Component, Entry, Prop, Column, Row, Text, WebView, Color } from '@kit/arkui';
+import { Component, Entry, Prop, Column, Row, Text, WebView, Color } from "@kit.ArkUI";
 import type { RatingInfo } from '../common/types';
 
 @Entry

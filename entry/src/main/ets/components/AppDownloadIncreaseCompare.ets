@@ -1,4 +1,4 @@
-import { Component, Entry, Prop, Column, Row, Text, Picker, Button, TextField, WebView, Color } from '@kit/arkui';
+import { Component, Entry, Prop, Column, Row, Text, Picker, Button, TextField, WebView, Color } from "@kit.ArkUI";
 import { formatNumber } from '../common/utils';
 import type { RankingsDownloadIncrease, RankingsDownloadIncreaseType } from '../common/types';
 import { fetchIconUrl, fetchRankingDownloadIncrease } from '../common/api';

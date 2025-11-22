@@ -1,7 +1,7 @@
-import { Component, Entry, Column, Row, Text, Image, Color, ScrollView } from '@kit/arkui';
+import { Component, Entry, Column, Row, Text, Image, Color, ScrollView } from "@kit.ArkUI";
 import type { SubmitParseResult } from '../common/types';
 import { formatNumber, formatSize } from '../common/utils';
-import { useRouter } from '@kit/arkui';
+import { useRouter } from "@kit.ArkUI";
 
 @Entry
 @Component

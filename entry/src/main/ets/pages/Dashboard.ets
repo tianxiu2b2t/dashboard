@@ -1,5 +1,5 @@
-import { Component, Entry, Column, Row, Text, Button, Color, ref, onMounted, watch } from '@kit/arkui';
-import { useRouter } from '@kit/arkui';
+import { Component, Entry, Column, Row, Text, Button, Color, ref, onMounted, watch } from "@kit.ArkUI";
+import { useRouter } from "@kit.ArkUI";
 import { AppCountInfo } from '../components/AppCountInfo';
 import { AppTotalStarChart } from '../components/AppTotalStarChart';
 import { AppSdkPie } from '../components/AppSdkPie';
@@ -32,50 +32,64 @@ export struct DashboardPage {
 
   @Builder
   build() {
-    Column({ width: '100%' }) {
+    Column().width('100%') {
       // 顶部信息卡片
-      Column({ marginBottom: 24 }) {
+      Column().margin({ bottom: 24 }) {
         Text(`华为应用市场看板 数据收集自 appgallery api 不保证来源的准确性、完整性和真实性 仅供参考`)
-          .fontSize(20).fontWeight('semibold').color(Color('#1e40af')).margin({ bottom: 8 })
-        Text(`API 版本 ${this.marketInfo.value.crate_version}`).fontSize(16).fontWeight('semibold').color(Color('#1e40af')).margin({ bottom: 12 })
-        Row({ gap: 8, wrap: 'wrap' }) {
-          Button({ text: this.refreshing.value ? '刷新中...' : '刷新数据', onClick: () => this.refreshData(), backgroundColor: Color('#06b6d4') })
-          Button({ text: '帮助信息', onClick: () => this.router.push('/help'), backgroundColor: Color('#10b981') })
-          Button({ text: '问题反馈&交流', onClick: () => this.router.push('/contact'), backgroundColor: Color('#8b5cf6') })
-          Button({ text: '投稿', onClick: () => this.router.push('/submit'), backgroundColor: Color('#f97316') })
-          Button({ text: '查看更新日志', onClick: () => this.router.push('/changelog'), backgroundColor: Color('#ef4444') })
-          Button({ text: '打开 v1 站', onClick: () => window.open('http://shenjack.top:10003/dashboard'), backgroundColor: Color('#0ea5e9') })
-          Button({ text: '切换主题', onClick: () => document.documentElement.classList.toggle('dark'), backgroundColor: Color('#6b7280') })
-        }
-        Text(this.nextRefreshTime.value < 0 ? `距离下次刷新时间: ${formatCountTimeWithUnit(this.nextRefreshTime.value)}` : '正在刷新').fontSize(14).color(Color('#6b7280')).margin({ top: 8 })
-      }
+          .fontSize(20).fontWeight('semibold').fontColor('#1e40af').margin({ bottom: 8 });
+
+        Text(`API 版本 ${this.marketInfo.value.crate_version}`)
+          .fontSize(16).fontWeight('semibold').fontColor('#1e40af').margin({ bottom: 12 });
+
+        Row() {
+          const buttons = [
+            { text: this.refreshing.value ? '刷新中...' : '刷新数据', onClick: () => this.refreshData(), bg: '#06b6d4' },
+            { text: '帮助信息', onClick: () => this.router.push('/help'), bg: '#10b981' },
+            { text: '问题反馈&交流', onClick: () => this.router.push('/contact'), bg: '#8b5cf6' },
+            { text: '投稿', onClick: () => this.router.push('/submit'), bg: '#f97316' },
+            { text: '查看更新日志', onClick: () => this.router.push('/changelog'), bg: '#ef4444' },
+            { text: '打开 v1 站', onClick: () => window.open('http://shenjack.top:10003/dashboard'), bg: '#0ea5e9' },
+            { text: '切换主题', onClick: () => document.documentElement.classList.toggle('dark'), bg: '#6b7280' },
+          ];
+
+          ForEach(buttons, (btn) => {
+            Button()
+              .text(btn.text)
+              .backgroundColor(btn.bg)
+              .onClick(btn.onClick)
+              .margin({ right: 8, bottom: 8 });
+          });
+        };
+
+        Text(this.nextRefreshTime.value < 0 ? `距离下次刷新时间: ${formatCountTimeWithUnit(this.nextRefreshTime.value)}` : '正在刷新')
+          .fontSize(14).fontColor('#6b7280').margin({ top: 8 });
+      };
 
       // 同步进度
-      Column({ marginBottom: 24 }) {
-        AppSyncProgress({})
-      }
+      AppSyncProgress();
 
       // 总览信息
-      AppCountInfo({ value: this.marketInfo.value })
+      AppCountInfo({ value: this.marketInfo.value });
 
       // 评分与 SDK 分布
-      Row({ gap: 16, wrap: 'wrap', minHeight: 384 }) {
-        AppTotalStarChart({ value: this.stars.value })
-        AppSdkPie({ title: '应用目标 sdk 分布', value: this.targetSdk.value })
-        AppSdkPie({ title: '应用最小 sdk 分布', value: this.minSdk.value })
-      }
+      Row().minHeight(384) {
+        AppTotalStarChart({ value: this.stars.value });
+        AppSdkPie({ title: '应用目标 sdk 分布', value: this.targetSdk.value });
+        AppSdkPie({ title: '应用最小 sdk 分布', value: this.minSdk.value });
+      };
 
       // 下载榜
-      AppDownloadChart({ title: '总下载榜', value: this.topDownload.value, yAxisMin: true })
-      AppDownloadChart({ title: '非华为应用/内置应用下载榜', value: this.topDownloadOutHuawei.value, yAxisMin: true })
+      AppDownloadChart({ title: '总下载榜', value: this.topDownload.value, yAxisMin: true });
+      AppDownloadChart({ title: '非华为应用/内置应用下载榜', value: this.topDownloadOutHuawei.value, yAxisMin: true });
 
       // 下载增量对比
-      AppDownloadIncreaseCompare({ ref: (r) => this.downloadIncreaseRef = r })
+      AppDownloadIncreaseCompare({ ref: (r) => this.downloadIncreaseRef = r });
 
       // 搜索列表
-      AppSearchList({ total_apps: this.marketInfo.value.app_count.total })
+      AppSearchList({ total_apps: this.marketInfo.value.app_count.total });
     }
   }
+
 
   private async refreshMarketInfo() { this.marketInfo.value = await fetchMarketInfo(); }
   private async refreshTopDownloadApp() { this.topDownload.value = await topDownloadHuawei(); this.topDownloadOutHuawei.value = await topDownloadWithoutHuawei(); }

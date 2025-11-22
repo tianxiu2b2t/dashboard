@@ -1,4 +1,4 @@
-import { Component, Entry, Column, Row, Text, ProgressCircle, Color } from '@kit/arkui';
+import { Component, Entry, Column, Row, Text, ProgressCircle, Color } from "@kit.ArkUI";
 
 @Entry
 @Component

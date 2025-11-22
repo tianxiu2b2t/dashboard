@@ -1,4 +1,4 @@
-import { Component, Entry, Prop, Column, Row, Text, WebView, Color } from '@kit/arkui';
+import { Component, Entry, Prop, Column, Row, Text, WebView, Color } from "@kit.ArkUI";
 import { formatNumber } from '../common/utils';
 import type { AppInfo } from '../common/types';
 

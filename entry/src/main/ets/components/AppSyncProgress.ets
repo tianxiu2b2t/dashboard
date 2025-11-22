@@ -1,4 +1,4 @@
-import { Component, Entry, Column, Row, Text, ProgressBar, Color, onMounted, onBeforeUnmount, ref } from '@kit/arkui';
+import { Component, Entry, Column, Row, Text, ProgressBar, Color, onMounted, onBeforeUnmount, ref } from "@kit.ArkUI";
 import type { SyncProgress } from '../common/types';
 import { formatCountTimeWithSpilt, formatCountTimeWithUnit, formatNumber } from '../common/utils';
 import { BASE_API } from '../common/dynmaticAPI';
