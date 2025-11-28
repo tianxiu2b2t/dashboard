@@ -5,13 +5,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "storeFile": "/Users/raychen/Documents/Code/HarmonyOS/DevEco-Studio/#certificate/Key.p12",
-          "storePassword": "0000001E6B214B279827206127353B2102BAF0E3599A271D1DBDCFC55684B2736F8E8DAF115103E5451AE3D24D8E",
-          "keyAlias": "key",
-          "keyPassword": "0000001EEB4A62765D0D4DB15FB881684A9DA69D2A501195E30E9E517EC05C2544C2037AB409E35C12C7377FA9C5",
+          "certpath": "/Users/raychen/.ohos/config/default_dashboard_25f8DyWZP3oxkEReIDJyhmsfd12m1ARCNkSINtxcXFE=.cer",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001BAEC19202B09EB617CFF9F0472913846A90D5AC47B092108DF54497FAC95763A0C4F543E4B2ED07",
+          "profile": "/Users/raychen/.ohos/config/default_dashboard_25f8DyWZP3oxkEReIDJyhmsfd12m1ARCNkSINtxcXFE=.p7b",
           "signAlg": "SHA256withECDSA",
-          "profile": "/Users/raychen/Documents/Code/HarmonyOS/DevEco-Studio/#certificate/dashboardRelease.p7b",
-          "certpath": "/Users/raychen/Documents/Code/HarmonyOS/DevEco-Studio/#certificate/dashboard.cer"
+          "storeFile": "/Users/raychen/.ohos/config/default_dashboard_25f8DyWZP3oxkEReIDJyhmsfd12m1ARCNkSINtxcXFE=.p12",
+          "storePassword": "0000001B862C149035E6E671508F06DD910666402BDFD4F84A8AEF5F5BC83D68D4284604953501E1891A66"
         }
       }
     ],
