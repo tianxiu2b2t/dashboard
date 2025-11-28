@@ -2,25 +2,25 @@
   "app": {
     "signingConfigs": [
       {
-        "name": "default",
+        "name": "release",
         "type": "HarmonyOS",
         "material": {
           "certpath": "/Users/raychen/.ohos/config/default_dashboard_25f8DyWZP3oxkEReIDJyhmsfd12m1ARCNkSINtxcXFE=.cer",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001BAEC19202B09EB617CFF9F0472913846A90D5AC47B092108DF54497FAC95763A0C4F543E4B2ED07",
+          "keyPassword": "0000001B3EAF87E250DF49CE31EF14CD59A46390C3B9EAEC709B297ED154F6C3EA149FB6C2F72B133D3A11",
           "profile": "/Users/raychen/.ohos/config/default_dashboard_25f8DyWZP3oxkEReIDJyhmsfd12m1ARCNkSINtxcXFE=.p7b",
           "signAlg": "SHA256withECDSA",
           "storeFile": "/Users/raychen/.ohos/config/default_dashboard_25f8DyWZP3oxkEReIDJyhmsfd12m1ARCNkSINtxcXFE=.p12",
-          "storePassword": "0000001B862C149035E6E671508F06DD910666402BDFD4F84A8AEF5F5BC83D68D4284604953501E1891A66"
+          "storePassword": "0000001B00E8F9DBAFBDF72DAF7D9793BDAD0EB3383DB345EABDA8E0C154DA578BAE222381F603BBC24435"
         }
-      }
+      },
     ],
     "products": [
       {
         "name": "default",
-        "signingConfig": "default",
+        "signingConfig": "release",
         "targetSdkVersion": "6.0.0(20)",
-        "compatibleSdkVersion": "6.0.0(20)",
+        "compatibleSdkVersion": "5.0.0(12)",
         "runtimeOS": "HarmonyOS",
         "buildOption": {
           "strictMode": {
