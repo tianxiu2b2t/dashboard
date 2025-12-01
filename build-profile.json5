@@ -15,25 +15,25 @@
         }
       },
       {
-        "name": "shenjack",
+        "name": "debug",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\36958\\.ohos\\config\\shenjack_dashboard_MfjAxnsZYyFsvaJHc3z9Vt2ocwt5zsdKY17o12v5q_k=.cer",
+          "certpath": "/Users/raychen/.ohos/config/debug_dashboard_25f8DyWZP3oxkEReIDJyhmsfd12m1ARCNkSINtxcXFE=.cer",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001B05839C7FA1230EA1D5C2C02CCAB6A786FD1542473A6549A76C8C97ED7E15A4CB17687C22BAE53B",
-          "profile": "C:\\Users\\36958\\.ohos\\config\\shenjack_dashboard_MfjAxnsZYyFsvaJHc3z9Vt2ocwt5zsdKY17o12v5q_k=.p7b",
+          "keyPassword": "0000001BC5A8D049B5B03B87DDA88911A0F0CCAD3D9D01BA6A664F6418E48FFA6D600F70B7C7016E0CAFF9",
+          "profile": "/Users/raychen/.ohos/config/debug_dashboard_25f8DyWZP3oxkEReIDJyhmsfd12m1ARCNkSINtxcXFE=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\36958\\.ohos\\config\\shenjack_dashboard_MfjAxnsZYyFsvaJHc3z9Vt2ocwt5zsdKY17o12v5q_k=.p12",
-          "storePassword": "0000001BCF049A75195E602534CF5BC9D20A49D04FA440803AFE61B1F9C53324E9136804AC9889A5A69C90"
+          "storeFile": "/Users/raychen/.ohos/config/debug_dashboard_25f8DyWZP3oxkEReIDJyhmsfd12m1ARCNkSINtxcXFE=.p12",
+          "storePassword": "0000001B91EB88A9C42D65CCEE5A442FB2A13F3FB47E5A898624C0FF543F94A2D39E7AEB6BF1A3AF0C73A7"
         }
       }
     ],
     "products": [
       {
         "name": "default",
-        "signingConfig": "release",
+        "signingConfig": "debug",
         "targetSdkVersion": "6.0.0(20)",
-        "compatibleSdkVersion": "5.0.0(12)",
+        "compatibleSdkVersion": "6.0.0(20)",
         "runtimeOS": "HarmonyOS",
         "buildOption": {
           "strictMode": {
