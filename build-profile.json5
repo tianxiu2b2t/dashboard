@@ -1,0 +1,69 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "release",
+        "type": "HarmonyOS",
+        "material": {
+          "storeFile": "/Users/raychen/Documents/Code/HarmonyOS/DevEco-Studio/#certificate/Rayawa.p12",
+          "storePassword": "0000001ECBF5A3058500DEC1E0B0E5C233030935313E289B1B9F01DB1D82DD57F2B833B4D6F86CA16F88C4AA11B8",
+          "keyAlias": "Rayawa",
+          "keyPassword": "0000001ECFD27CB22569D042C49C807874FED46C5FA5C9329F053C3396DC55F654BA4F13A20175E9997B09901190",
+          "signAlg": "SHA256withECDSA",
+          "profile": "/Users/raychen/Documents/Code/HarmonyOS/DevEco-Studio/#certificate/RayawaRelease.p7b",
+          "certpath": "/Users/raychen/Documents/Code/HarmonyOS/DevEco-Studio/#certificate/Rayawa.cer"
+        }
+      },
+      {
+        "name": "shenjack",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\36958\\.ohos\\config\\shenjack_dashboard_MfjAxnsZYyFsvaJHc3z9Vt2ocwt5zsdKY17o12v5q_k=.cer",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001B05839C7FA1230EA1D5C2C02CCAB6A786FD1542473A6549A76C8C97ED7E15A4CB17687C22BAE53B",
+          "profile": "C:\\Users\\36958\\.ohos\\config\\shenjack_dashboard_MfjAxnsZYyFsvaJHc3z9Vt2ocwt5zsdKY17o12v5q_k=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\36958\\.ohos\\config\\shenjack_dashboard_MfjAxnsZYyFsvaJHc3z9Vt2ocwt5zsdKY17o12v5q_k=.p12",
+          "storePassword": "0000001BCF049A75195E602534CF5BC9D20A49D04FA440803AFE61B1F9C53324E9136804AC9889A5A69C90"
+        }
+      }
+    ],
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "release",
+        "targetSdkVersion": "6.0.0(20)",
+        "compatibleSdkVersion": "5.0.0(12)",
+        "runtimeOS": "HarmonyOS",
+        "buildOption": {
+          "strictMode": {
+            "caseSensitiveCheck": true,
+            "useNormalizedOHMUrl": true
+          }
+        }
+      }
+    ],
+    "buildModeSet": [
+      {
+        "name": "debug",
+      },
+      {
+        "name": "release"
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}
