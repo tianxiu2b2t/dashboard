@@ -26,6 +26,19 @@
           "storeFile": "/Users/raychen/.ohos/config/debug_dashboard_25f8DyWZP3oxkEReIDJyhmsfd12m1ARCNkSINtxcXFE=.p12",
           "storePassword": "0000001B91EB88A9C42D65CCEE5A442FB2A13F3FB47E5A898624C0FF543F94A2D39E7AEB6BF1A3AF0C73A7"
         }
+      },
+      {
+        "name": "shenjack",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\36958\\.ohos\\config\\shenjack_dashboard_MfjAxnsZYyFsvaJHc3z9Vt2ocwt5zsdKY17o12v5q_k=.cer",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001B76775A4E3E4DC8DF3156093630A8E3A68099C216E29C877AF82F2C7CC3DE63ECFF7F4739827E6D",
+          "profile": "C:\\Users\\36958\\.ohos\\config\\shenjack_dashboard_MfjAxnsZYyFsvaJHc3z9Vt2ocwt5zsdKY17o12v5q_k=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\36958\\.ohos\\config\\shenjack_dashboard_MfjAxnsZYyFsvaJHc3z9Vt2ocwt5zsdKY17o12v5q_k=.p12",
+          "storePassword": "0000001B17D8626971725AF2DE99A21699E3FF2D13233767286DDDE82603F6CBC47537A8B251151BEA0283"
+        }
       }
     ],
     "products": [
@@ -33,7 +46,7 @@
         "name": "default",
         "signingConfig": "debug",
         "targetSdkVersion": "6.0.0(20)",
-        "compatibleSdkVersion": "6.0.0(20)",
+        "compatibleSdkVersion": "5.0.5(17)",
         "runtimeOS": "HarmonyOS",
         "buildOption": {
           "strictMode": {
