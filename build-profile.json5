@@ -5,15 +5,15 @@
         "name": "release",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "/Users/raychen/.ohos/config/default_dashboard_25f8DyWZP3oxkEReIDJyhmsfd12m1ARCNkSINtxcXFE=.cer",
-          "keyAlias": "debugKey",
-          "keyPassword": "0000001B3EAF87E250DF49CE31EF14CD59A46390C3B9EAEC709B297ED154F6C3EA149FB6C2F72B133D3A11",
-          "profile": "/Users/raychen/.ohos/config/default_dashboard_25f8DyWZP3oxkEReIDJyhmsfd12m1ARCNkSINtxcXFE=.p7b",
+          "storeFile": "/Users/raychen/Documents/Code/HarmonyOS/DevEco-Studio/#certificate/Rayawa.p12",
+          "storePassword": "0000001ECBF5A3058500DEC1E0B0E5C233030935313E289B1B9F01DB1D82DD57F2B833B4D6F86CA16F88C4AA11B8",
+          "keyAlias": "Rayawa",
+          "keyPassword": "0000001ECFD27CB22569D042C49C807874FED46C5FA5C9329F053C3396DC55F654BA4F13A20175E9997B09901190",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "/Users/raychen/.ohos/config/default_dashboard_25f8DyWZP3oxkEReIDJyhmsfd12m1ARCNkSINtxcXFE=.p12",
-          "storePassword": "0000001B00E8F9DBAFBDF72DAF7D9793BDAD0EB3383DB345EABDA8E0C154DA578BAE222381F603BBC24435"
+          "profile": "/Users/raychen/Documents/Code/HarmonyOS/DevEco-Studio/#certificate/RayawaRelease.p7b",
+          "certpath": "/Users/raychen/Documents/Code/HarmonyOS/DevEco-Studio/#certificate/Rayawa.cer"
         }
-      },
+      }
     ],
     "products": [
       {
