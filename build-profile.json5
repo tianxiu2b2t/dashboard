@@ -20,11 +20,11 @@
         "material": {
           "certpath": "/Users/raychen/.ohos/config/debug_dashboard_25f8DyWZP3oxkEReIDJyhmsfd12m1ARCNkSINtxcXFE=.cer",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001BC5A8D049B5B03B87DDA88911A0F0CCAD3D9D01BA6A664F6418E48FFA6D600F70B7C7016E0CAFF9",
+          "keyPassword": "0000001B424AB7832C12D1C7E631678987414146E1E75075611283FB5B23D5C40FF9FC2429E3F7341B14F4",
           "profile": "/Users/raychen/.ohos/config/debug_dashboard_25f8DyWZP3oxkEReIDJyhmsfd12m1ARCNkSINtxcXFE=.p7b",
           "signAlg": "SHA256withECDSA",
           "storeFile": "/Users/raychen/.ohos/config/debug_dashboard_25f8DyWZP3oxkEReIDJyhmsfd12m1ARCNkSINtxcXFE=.p12",
-          "storePassword": "0000001B91EB88A9C42D65CCEE5A442FB2A13F3FB47E5A898624C0FF543F94A2D39E7AEB6BF1A3AF0C73A7"
+          "storePassword": "0000001B00AD23C8BE0959507B7BE727F37BEE606EA7F11C957918E0D7866B2BCFB9C934737D733B1D7E89"
         }
       },
       {
