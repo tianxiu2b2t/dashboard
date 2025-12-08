@@ -5,6 +5,8 @@ import { APP_VERSION } from "../global_data";
 import { deviceInfo } from '@kit.BasicServicesKit';
 import { curves } from '@kit.ArkUI';
 import UserStorage from '../common/user';
+import { tutorial } from '../component/common/tutorial'
+import { contact } from '../component/common/contact'
 
 interface SubmitFormData {
     appLink: string;
@@ -21,11 +23,13 @@ export struct user {
             .combine(TransitionEffect.move(TransitionEdge.BOTTOM))
             .combine(TransitionEffect.scale({ x: 0, y: 1 }))
             .animation({ curve: curves.springMotion(0.7, 0.8), duration: 1000 })
+    @State showTutorial: boolean = false;
+    @State showSubmit: boolean = false;
+    @State showContact: boolean = false;
     @State handlePopup: boolean = false;
     @State customPopup: boolean = false;
     @StorageLink('userName') userName: string = ''
     @State deviceName: string = ''
-    @State isPresent: boolean = false;
     @State formData: SubmitFormData = {
         appLink: '',
         packageName: '',
@@ -133,18 +137,19 @@ export struct user {
         // ->提交逻辑，如调用API等
         console.log('提交数据:', this.formData);
         prompt.showToast({
-            message: '提交成功，感谢您的反馈！',
+            // message: '提交成功，感谢您的反馈！',
+            message: '功能开发中',
             duration: 3000
         });
 
         // 清空表单并关闭弹窗
-        this.formData = {
-            appLink: '',
-            packageName: '',
-            appId: '',
-            remark: ''
-        };
-        this.isPresent = !this.isPresent;
+        // this.formData = {
+        //     appLink: '',
+        //     packageName: '',
+        //     appId: '',
+        //     remark: ''
+        // };
+        // this.showSubmit = !this.showSubmit;
     }
 
     aboutToAppear() {
@@ -154,20 +159,14 @@ export struct user {
     build() {
         Column() {
             Stack() {
-                if (this.isPresent) {
+                if (this.showSubmit) {
                     Stack() {
-                        Column()
-                            .backgroundColor(Color.Transparent)
-                            .height('200%')
-                            .width('200%')
-                            .onClick(() => {
-                                this.isPresent = !this.isPresent;
-                            })
-                            .backgroundBlurStyle(BlurStyle.BACKGROUND_THIN)
-                            .transition(TransitionEffect.OPACITY.animation({
-                                curve: curves.springMotion(0, 1),
-                                duration: 1000
-                            }))
+                        Column(){
+                            Text('* 点击外部区域或向下滑动关闭页面').fontSize(14).margin({ bottom: 10 }).position({x:'40%',y:'62%'}).fontColor(Color.Grey)
+                        }.backgroundColor(Color.Transparent).height('300%').width('300%')
+                        .onClick(() => { this.showSubmit = !this.showSubmit; })
+                        .backgroundBlurStyle(BlurStyle.BACKGROUND_THIN)
+                        .transition(TransitionEffect.OPACITY.animation({curve :curves.springMotion(0,1), duration:1000}))
                         Column({ space: 20 }) {
                             Row() {
                                 Row({ space: 8 }) {
@@ -175,7 +174,7 @@ export struct user {
                                         .height(25)
                                         .width(25)
 
-                                    Text('投稿应用')
+                                    Text('投稿应用（敬请期待）')
                                         .fontSize(21)
                                         .fontWeight(FontWeight.Bold)
                                 }
@@ -186,7 +185,7 @@ export struct user {
                                     .height(26)
                                     .width(26)
                                     .onClick(() => {
-                                        this.isPresent = !this.isPresent;
+                                        this.showSubmit = !this.showSubmit;
                                     })
                             }
                             .width('100%')
@@ -334,11 +333,11 @@ export struct user {
                                     })
 
                                 // 提交按钮
-                                Button('提交投稿', { type: ButtonType.Capsule })
+                                Button('功能开发中', { type: ButtonType.Capsule })
                                     .margin(2)
                                     .width('40%')
                                     .height(44)
-                                    .backgroundColor(Color.Red)
+                                    .backgroundColor(Color.Grey)
                                     .fontColor(Color.White)
                                     .fontSize(16)
                                     .fontWeight(FontWeight.Medium)
@@ -371,12 +370,60 @@ export struct user {
                         SwipeGesture({ direction: SwipeDirection.Vertical })
                             .onAction((move: GestureEvent | undefined) => {
                                 if (move) {
-                                    this.isPresent = !this.isPresent
+                                    this.showSubmit = !this.showSubmit
                                 }
                             })
                     )
                     .zIndex(2)
 
+                    .height('100%')
+                    .width('100%')
+
+                }
+                if (this.showTutorial) {
+                    Stack(){
+                        Column(){
+                            Text('* 点击外部区域或向下滑动关闭页面').fontSize(14).margin({ bottom: 10 }).position({x:'40%',y:'64%'}).fontColor(Color.Grey)
+                        }.backgroundColor(Color.Transparent).height('300%').width('300%')
+                        .onClick(() => { this.showTutorial = !this.showTutorial; })
+                        .backgroundBlurStyle(BlurStyle.BACKGROUND_THIN)
+                        .transition(TransitionEffect.OPACITY.animation({curve :curves.springMotion(0,1), duration:1000}))
+                        tutorial()
+                    }
+                    .gesture(
+                        SwipeGesture({ direction: SwipeDirection.Vertical })
+                            .onAction((move: GestureEvent | undefined) => {
+                                if (move) {
+                                    this.showTutorial = !this.showTutorial
+                                }
+                            })
+                    )
+                    .transition(this.effect)
+                    .zIndex(4)
+                    .height('100%')
+                    .width('100%')
+
+                }
+                if (this.showContact) {
+                    Stack(){
+                        Column(){
+                            Text('* 点击外部区域或向下滑动关闭页面').fontSize(14).margin({ bottom: 10 }).position({x:'40%',y:'64%'}).fontColor(Color.Grey)
+                        }.backgroundColor(Color.Transparent).height('300%').width('300%')
+                        .onClick(() => { this.showContact = !this.showContact; })
+                        .backgroundBlurStyle(BlurStyle.BACKGROUND_THIN)
+                        .transition(TransitionEffect.OPACITY.animation({curve :curves.springMotion(0,1), duration:1000}))
+                        contact()
+                    }
+                    .gesture(
+                        SwipeGesture({ direction: SwipeDirection.Vertical })
+                            .onAction((move: GestureEvent | undefined) => {
+                                if (move) {
+                                    this.showContact = !this.showContact
+                                }
+                            })
+                    )
+                    .transition(this.effect)
+                    .zIndex(4)
                     .height('100%')
                     .width('100%')
 
@@ -450,9 +497,7 @@ export struct user {
                                         .height(24)
                                         .width(24)
                                         .objectFit(ImageFit.Contain)
-                                        .onClick(() => {
-                                            this.handlePopup = !this.handlePopup;
-                                        })
+                                        .onClick(() => {this.handlePopup = !this.handlePopup;})
                                         .bindPopup(this.handlePopup, {
                                             message: '用于您投稿应用时的默认用户名\n详情见请"使用教程-投稿功能"',
                                             placement: Placement.Top,
@@ -508,8 +553,9 @@ export struct user {
                                             .width(24)
                                             .objectFit(ImageFit.Contain)
 
-                                        Text('投稿应用')
+                                        Text('投稿应用（开发中）')
                                             .fontSize(16)
+                                            .fontColor(Color.Grey)
                                             .margin({ left: 12 })
                                     }
 
@@ -519,7 +565,7 @@ export struct user {
                                         .objectFit(ImageFit.Contain)
                                 }
                                 .onClick(() => {
-                                    this.isPresent = !this.isPresent;
+                                    this.showSubmit = !this.showSubmit;
                                 })
                                 .height(56)
                                 .width('100%')
@@ -632,7 +678,7 @@ export struct user {
                                             .width(24)
                                             .objectFit(ImageFit.Contain)
 
-                                        Text('问题反馈 & 联系我们')
+                                        Text('联系我们')
                                             .fontSize(16)
                                             .margin({ left: 12 })
                                     }
@@ -642,7 +688,7 @@ export struct user {
                                         .width(16)
                                         .objectFit(ImageFit.Contain)
                                 }
-                                .onClick(() => router.pushUrl({ url: 'pages/user/contact' }))
+                                .onClick(() => { this.showContact = !this.showContact; })
                                 .height(56)
                                 .width('100%')
                                 .justifyContent(FlexAlign.SpaceBetween)
@@ -660,7 +706,7 @@ export struct user {
                                             .width(24)
                                             .objectFit(ImageFit.Contain)
 
-                                        Text('帮助信息 & 使用教程')
+                                        Text('使用教程')
                                             .fontSize(16)
                                             .margin({ left: 12 })
                                     }
@@ -670,7 +716,7 @@ export struct user {
                                         .width(16)
                                         .objectFit(ImageFit.Contain)
                                 }
-                                .onClick(() => router.pushUrl({ url: 'pages/user/tutorial' }))
+                                .onClick(() => this.showTutorial = !this.showTutorial)
                                 .height(56)
                                 .width('100%')
                                 .justifyContent(FlexAlign.SpaceBetween)
